@@ -2,17 +2,18 @@ package com.justcountit.group;
 
 import com.justcountit.commons.Currency;
 
+import com.justcountit.expenditure.Expenditure;
 import com.justcountit.group.membership.GroupMembership;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.Set;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tour_group")
 public class Group {
@@ -41,5 +42,8 @@ public class Group {
 
     @OneToMany(mappedBy="group")
     private Set<GroupMembership> groupMembers;
+
+    @OneToMany(mappedBy="groupName")
+    private Set<Expenditure> expenditures;
 }
 
