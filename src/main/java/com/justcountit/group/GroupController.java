@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.naming.AuthenticationException;
 import javax.persistence.PostLoad;
 import java.security.Principal;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/group")
@@ -29,8 +30,8 @@ public class GroupController {
         var callerId = appUserService.getUserId(callerEmail);
 
         var isOrganizer = groupMembershipService.isOrganizer(callerId, groupId);
-
-        if (isOrganizer){
+        // possibility of deleting yourself from group
+        if (isOrganizer || Objects.equals(callerId, userId)){
             service.deleteUserFromGroup(userId, groupId);
         }
         else {
@@ -50,7 +51,12 @@ public class GroupController {
         System.out.println(userId);
         service.addUserToGroup(groupId, userId);
     }
+    // You can add expenditure from some user in group and assign financialRequest to debtor, only for testing
+    @PostMapping("/{groupId}/user/{userId}/debtor/{debtorId}")
+    public void addExpenditureAndRequest( @PathVariable Long groupId, @PathVariable Long userId, @PathVariable Long debtorId){
+        service.addExpenditureAndRequest(groupId, userId, debtorId);
 
+    }
     @GetMapping
     public String sth(){
         return "Hello";

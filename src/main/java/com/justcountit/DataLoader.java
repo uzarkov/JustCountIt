@@ -27,5 +27,16 @@ public class DataLoader implements ApplicationRunner
         user.setBankAccountNumber("XD");
         user.setPhoneNumber("XD");
         appUserRepository.save(user);
+
+        var user2 = new AppUser();
+        user2.setEmail("whatr@what.com");
+        user2.setPassword(passwordEncoder.encode("pass"));
+        user2.setName("Second");
+        user2.setSurname("User");
+        user2.setNickname("Ur");
+        user2.setPesel("1234567898");
+        user2.setBankAccountNumber("124125352525");
+        user2.setPhoneNumber("532532523");
+        appUserRepository.save(user2);
     }
 }
