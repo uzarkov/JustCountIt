@@ -12,4 +12,6 @@ import java.util.Set;
 public interface FinancialRequestRepository extends JpaRepository<FinancialRequest,Long> {
     @Query("from FinancialRequest f where f.debtor.id = :debtorId and f.expenditure.groupName.id = :groupId")
     Set<FinancialRequest> getAllByDebtorAndExpenditure(@Param("debtorId") Long debtorId, @Param("groupId") Long groupId);
+
+
 }

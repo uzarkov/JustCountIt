@@ -1,18 +1,21 @@
 package com.justcountit.group;
 
+import com.justcountit.commons.Role;
 import com.justcountit.group.membership.GroupMembershipRepository;
 import com.justcountit.group.membership.GroupMembershipService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserRepository;
 import com.justcountit.user.AppUserService;
+import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import javax.persistence.PostLoad;
 import java.security.Principal;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/group")
@@ -23,7 +26,7 @@ public class GroupController {
     private final GroupMembershipService groupMembershipService;
     private final AppUserService appUserService;
 
-    @DeleteMapping("/{groupId}/user/{userId}")
+    @DeleteMapping("members/{groupId}/user/{userId}")
     public void deleteUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId, Principal principal){
         var callerEmail = principal.getName();
 
@@ -57,10 +60,14 @@ public class GroupController {
         service.addExpenditureAndRequest(groupId, userId, debtorId);
 
     }
-    @GetMapping
-    public String sth(){
-        return "Hello";
+
+    // Dorian's first use case, getting list of users with roles with current group
+    @GetMapping("/members/{groupId}")
+    public void getGroupMembers(@PathVariable Long groupId){
+        Set<AppUserWithRole>  usersInGroup = service.getGroupMember(groupId);
     }
+
+
 
 
 
