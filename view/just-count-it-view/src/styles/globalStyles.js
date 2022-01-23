@@ -44,9 +44,9 @@ export const globalStyles = StyleSheet.create({
     },
     modal: {
         width: '85%',
-        height: 450,
         backgroundColor: "#252525",
-        borderRadius: 20
+        borderRadius: 20,
+        paddingBottom: 12,
     },
     modalTitleContainer: {
         marginTop: '1%',

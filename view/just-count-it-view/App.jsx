@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StatusBar } from 'react-native';
 import { storeData } from './src/utils/asyncStorage';
 import { doPost } from './src/utils/fetchUtils';
 import { GroupsView } from './src/views/groups/GroupsView';
@@ -39,6 +40,10 @@ export default function App() {
 
   return (
     <>
+      <StatusBar
+        backgroundColor={"#303030"}
+        barStyle={'default'}
+      />
       {user.signedIn ?
         <GroupsView user={user} logout={() => logout()} />
         :

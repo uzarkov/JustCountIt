@@ -3,12 +3,25 @@ import { View, Text, ScrollView } from "react-native"
 import { ExpenditureItem } from "./ExpenditureItem"
 import { styles } from "./ExpendituresViewStyles"
 import ActionButton from "react-native-action-button"
+import { CreateExpenditureView } from "./create/CreateExpenditureView"
 
-export const ExpendituresView = ({ user, groupMetadata }) => {
+export const ExpendituresView = ({ user, groupMetadata, setShowNavigation }) => {
+    const [inCreation, setInCreation] = useState(false)
     const [expenditures, setExpenditures] = useState(sampleExpenditures)
 
     const totalCost = sumOfExpendituresPrices(expenditures)
     const myTotalCost = sumOfExpendituresPrices(expenditures.filter(e => e.userId === user.id))
+
+    if (inCreation) {
+        return <CreateExpenditureView
+            user={user}
+            groupMetadata={groupMetadata}
+            onCancel={() => {
+                setShowNavigation(true)
+                setInCreation(false)
+            }}
+        />
+    }
 
     return (
         <View style={styles.container}>
@@ -33,6 +46,10 @@ export const ExpendituresView = ({ user, groupMetadata }) => {
                     buttonTextStyle={{ color: '#000' }}
                     position={"center"}
                     zIndex={1}
+                    onPress={() => {
+                        setShowNavigation(false)
+                        setInCreation(true)
+                    }}
                 />
                 <View style={styles.footerContainer}>
                     <View style={styles.textContainer}>
