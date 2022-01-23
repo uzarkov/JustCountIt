@@ -7,22 +7,22 @@ import { GroupInfoView } from "./group-info/GroupInfoView"
 import { GroupNavigation, ROUTES } from "./GroupNavigation"
 import { styles } from "./GroupViewContainerStyles"
 
-export const GroupViewContainer = ({ groupMetadata, onExit }) => {
+export const GroupViewContainer = ({ user, groupMetadata, onExit }) => {
     const [currentView, setCurrentView] = useState(ROUTES.EXPENDITURES)
 
     const getCurrentViewComponent = () => {
         switch (currentView) {
             case ROUTES.BALANCE:
                 return (
-                    <BalanceView />
+                    <BalanceView user={user} groupMetadata={groupMetadata} />
                 )
             case ROUTES.EXPENDITURES:
                 return (
-                    <ExpendituresView />
+                    <ExpendituresView user={user} groupMetadata={groupMetadata} />
                 )
             case ROUTES.GROUP_INFO:
                 return (
-                    <GroupInfoView />
+                    <GroupInfoView user={user} groupMetadata={groupMetadata} />
                 )
             default:
                 throw new Error("You shouldn't be here")

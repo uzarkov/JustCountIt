@@ -2,25 +2,27 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     container: {
-        height: '100%',
-        backgroundColor: '#353535',
-    },
-    footerContainer: {
-        backgroundColor: '#222222',
         flexDirection: 'column',
-        height: '100%',
-        paddingTop: 2,
+        backgroundColor: '#353535',
+        paddingTop: 4,
+        marginTop: 4,
     },
     textContainer: {
         flexDirection: 'row',
         paddingHorizontal: 12,
         marginBottom: 2,
     },
+    stripe: {
+        alignSelf: 'center',
+        width: '98%',
+        height: 2,
+        backgroundColor: '#454545',
+        marginTop: 8,
+    },
     topText: {
         flex: 1,
         color: 'whitesmoke',
-        fontSize: 16,
-        paddingTop: 6,
+        fontSize: 18,
     },
     bottomText: {
         flex: 1,

@@ -12,6 +12,7 @@ export const GroupsView = ({ user, logout }) => {
     if (chosenGroup) {
         return (
             <GroupViewContainer
+                user={user}
                 groupMetadata={chosenGroup}
                 onExit={() => setChosenGroup(undefined)}
             />
@@ -36,4 +37,8 @@ const sampleGroupMetadata = {
     id: 1,
     name: "Grupa testowa",
     description: "Opis grupy testowej",
+    currency: {
+        name: "PLN",
+        symbol: "zł"
+    }
 }
