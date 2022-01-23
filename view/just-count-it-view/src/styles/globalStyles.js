@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 export const globalStyles = StyleSheet.create({
     inputAndroid: {
         marginBottom: 20,
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 14,
-        borderColor: '#03DAC5',
+        borderColor: '#BB86FC',
         fontSize: 20,
         color: 'white',
         textAlign: 'auto',
@@ -14,7 +14,7 @@ export const globalStyles = StyleSheet.create({
     button: {
         marginVertical: 10,
         borderRadius: 20,
-        backgroundColor: '#03DAC5',
+        backgroundColor: '#BB86FC',
         alignItems: 'center',
         justifyContent: 'center'
     },

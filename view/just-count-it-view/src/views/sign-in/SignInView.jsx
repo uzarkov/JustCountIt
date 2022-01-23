@@ -21,7 +21,7 @@ export const SignInView = ({ signIn }) => {
             <View style={styles.container}>
                 <View style={styles.titleContainer}>
                     <View style={styles.basicContainer}>
-                        <Text style={styles.title}>{"Just Count It"}</Text>
+                        <Text style={styles.title}>{"JustCountIt"}</Text>
                     </View>
                 </View>
                 <View style={styles.inputContainer}>

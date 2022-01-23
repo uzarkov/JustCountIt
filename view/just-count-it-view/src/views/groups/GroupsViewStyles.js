@@ -5,23 +5,6 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#353535',
     },
-    titleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-    },
-    inputContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    submitContainer: {
-        flex: 1.6,
-        alignItems: 'center',
-    },
-    input: {
-        height: 60,
-        width: 320,
-    },
     button: {
         height: 60,
         width: 250,
@@ -31,10 +14,5 @@ export const styles = StyleSheet.create({
         color: '#353535',
         fontSize: 20,
         fontWeight: 'bold'
-    },
-    link: {
-        color: 'white',
-        backgroundColor: '#353535',
-        fontSize: 18,
     },
 })

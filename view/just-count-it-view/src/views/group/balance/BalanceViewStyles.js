@@ -9,16 +9,6 @@ export const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
     },
-    title: {
-        fontSize: 50,
-        color: 'white',
-        fontWeight: "bold"
-    },
-    basicContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
     inputContainer: {
         flex: 1,
         alignItems: 'center',
@@ -41,5 +31,10 @@ export const styles = StyleSheet.create({
         color: '#353535',
         fontSize: 20,
         fontWeight: 'bold'
+    },
+    link: {
+        color: 'white',
+        backgroundColor: '#353535',
+        fontSize: 18,
     },
 })
