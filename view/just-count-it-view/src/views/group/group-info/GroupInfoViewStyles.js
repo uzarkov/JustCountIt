@@ -5,36 +5,46 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#353535',
     },
-    titleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
+    accordionContainer: {
+        paddingTop: 4,
+        marginTop: 4,
+        marginBottom: 2,
+        marginHorizontal: 20,
     },
-    inputContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    textContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 4,
+        marginTop: 4,
     },
-    submitContainer: {
-        flex: 1.6,
-        alignItems: 'center',
-    },
-    input: {
-        height: 60,
-        width: 320,
-    },
-    button: {
-        height: 60,
-        width: 250,
-        marginBottom: 30
-    },
-    buttonText: {
-        color: '#353535',
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
-    link: {
-        color: 'white',
-        backgroundColor: '#353535',
+    leftText: {
         fontSize: 18,
+        color: "#BB86FC"
+    },
+    rightText: {
+        fontSize: 18,
+        color: 'whitesmoke'
+    },
+    buttonPlaceholder: {
+        flex: 1,
+        padding: 6,
+        marginHorizontal: 12,
+        marginBottom: 8,
+        borderRadius: 4,
+    },
+    bottomButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#e04744',
+        padding: 5,
+        marginLeft: 12,
+        marginRight: 135,
+        borderRadius: 4,
+    },
+    actionButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 })

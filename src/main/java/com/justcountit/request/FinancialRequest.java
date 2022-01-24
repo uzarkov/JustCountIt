@@ -38,6 +38,7 @@ public class FinancialRequest {
     @Column(nullable = false)
     private Status status;
 
+    // TODO: Remove expenditure and add info about receiver and group
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "expenditure_id")
     private Expenditure expenditure;
