@@ -1,10 +1,9 @@
 package com.justcountit.expenditure;
 
+import com.justcountit.group.Group;
 import com.justcountit.request.FinancialRequest;
 import com.justcountit.user.AppUser;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +11,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Expenditure {
 
@@ -40,6 +40,10 @@ public class Expenditure {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id")
     private AppUser creator;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    private Group groupName;
 
     @OneToMany(mappedBy = "expenditure")
     private Set<FinancialRequest> financialRequests;
