@@ -8,7 +8,8 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
 public class GroupMembershipKey implements Serializable {
