@@ -1,30 +1,29 @@
 package com.justcountit.group;
 
-import com.justcountit.commons.Role;
-import com.justcountit.group.membership.GroupMembershipRepository;
 import com.justcountit.group.membership.GroupMembershipService;
-import com.justcountit.user.AppUser;
-import com.justcountit.user.AppUserRepository;
 import com.justcountit.user.AppUserService;
 import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
-import javax.persistence.PostLoad;
 import java.security.Principal;
-import java.util.*;
+import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/group")
 @RequiredArgsConstructor
-
 public class GroupController {
     private final GroupService service;
     private final GroupMembershipService groupMembershipService;
     private final AppUserService appUserService;
+
+    @GetMapping("/{groupId}/metadata")
+    public ResponseEntity<GroupMetadata> getGroupMetadata(@PathVariable Long groupId) {
+        return ResponseEntity.ok(service.getGroupMetadataFor(groupId));
+    }
 
     @DeleteMapping("members/{groupId}/user/{userId}")
     public void deleteUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId, Principal principal){

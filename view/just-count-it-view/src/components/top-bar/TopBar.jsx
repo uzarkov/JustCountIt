@@ -6,7 +6,13 @@ import { styles } from './TopBarStyles';
 export const TopBar = ({ text, onExit }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}></Text>
+            <Pressable>
+                <MaterialIcons
+                    name={"logout"}
+                    color={"transparent"}
+                    size={30}
+                />
+            </Pressable>
             <Text style={styles.title}>{text}</Text>
             <Pressable onPress={() => onExit()}>
                 <MaterialIcons
