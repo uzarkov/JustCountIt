@@ -31,8 +31,13 @@ public class GroupMembershipService {
     public GroupMembership addUserToGroup(Long userId, Long groupId){
         Group group = groupRepository.findById(groupId).orElseThrow();
         AppUser appUser = appUserRepository.findById(userId).orElseThrow();
-
-        return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId,groupId),appUser, group, Role.ORGANIZER));
-
+        var sth = groupMembershipRepository.count();
+        // if group is empty new group member becomes organizer
+        if (sth == 0 ){
+            return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId,groupId),appUser, group, Role.ORGANIZER));
+        }
+        else {
+            return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId, groupId), appUser, group, Role.MEMBER));
+        }
     }
 }
