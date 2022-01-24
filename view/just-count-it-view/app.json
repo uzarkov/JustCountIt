@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "just-count-it-view",
+    "slug": "just-count-it-view",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "just-count-it-view"
+}

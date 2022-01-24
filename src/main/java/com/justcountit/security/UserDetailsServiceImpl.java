@@ -1,6 +1,5 @@
 package com.justcountit.security;
 
-//import io.github.boavenn.selfimprovementhelper.auth.AuthService;
 import com.justcountit.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

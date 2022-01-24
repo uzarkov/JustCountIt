@@ -3,9 +3,7 @@ package com.justcountit.request;
 import com.justcountit.commons.Status;
 import com.justcountit.expenditure.Expenditure;
 import com.justcountit.user.AppUser;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +11,8 @@ import java.util.Date;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class FinancialRequest {
 
@@ -35,6 +34,7 @@ public class FinancialRequest {
     @Column(nullable = false)
     private double price;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
