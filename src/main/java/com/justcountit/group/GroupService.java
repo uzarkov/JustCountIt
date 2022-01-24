@@ -14,10 +14,8 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.MethodNotAllowedException;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +24,19 @@ public class GroupService {
     private final ExpenditureService expenditureService;
     private final FinancialRequestService financialRequestService;
     private final GroupRepository groupRepository;
+
+    public GroupMetadata getGroupMetadataFor(Long groupId) {
+        var group = groupRepository.findById(groupId).orElseThrow();
+        var members = group.getGroupMembers().stream()
+                           .map(MembershipMetadata::from)
+                           .collect(Collectors.toMap(MembershipMetadata::userId, m -> m));
+
+        return new GroupMetadata(groupId,
+                                 group.getName(),
+                                 group.getDescription(),
+                                 group.getCurrency(),
+                                 members);
+    }
 
 
     public void deleteUserFromGroup(Long userId, Long groupId)  {
