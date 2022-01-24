@@ -1,5 +1,6 @@
 package com.justcountit.group;
 
+import com.justcountit.commons.Role;
 import com.justcountit.expenditure.Expenditure;
 import com.justcountit.expenditure.ExpenditureService;
 import com.justcountit.group.membership.GroupMembership;
@@ -7,9 +8,16 @@ import com.justcountit.group.membership.GroupMembershipService;
 import com.justcountit.request.FinancialRequest;
 import com.justcountit.request.FinancialRequestService;
 import com.justcountit.user.AppUser;
+import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.MethodNotAllowedException;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +53,10 @@ public class GroupService {
         FinancialRequest financialRequest =financialRequestService.addRequest(expenditure.getId(), debtorId);
         Expenditure expenditureSet = expenditureService.setFinancialRequest(expenditure.getId(),financialRequest.getId());
 
+    }
+
+    public Set<AppUserWithRole>  getGroupMember(Long groupId){
+        return groupMembershipService.getGroupMembers(groupId);
     }
 
 

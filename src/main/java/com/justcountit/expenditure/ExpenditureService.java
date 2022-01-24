@@ -31,12 +31,15 @@ public class ExpenditureService {
 
         return expenditureRepository.getAllByCreatorAndGroupName(userId, groupId);
     }
-
+    // TODO correct implementation of thist method
     public Expenditure addExpenditure(Long userId, Long groupId){
         Group group = groupRepository.findById(groupId).orElseThrow();
         AppUser appUser = appUserRepository.findById(userId).orElseThrow();
-
-        return expenditureRepository.save(new Expenditure(1L,12.2,"Test Expenditure",LocalDateTime.now(), appUser,group,Collections.emptySet()));
+        Random rand = new Random(); //instance of random class
+        int upperbound = 25;
+        //generate random values from 0-24
+        Long int_random = (long) rand.nextInt(upperbound);
+        return expenditureRepository.save(new Expenditure(int_random,12.2,"Test Expenditure",LocalDateTime.now(), appUser,group,Collections.emptySet()));
 
     }
     public Expenditure setFinancialRequest(Long expenditureId, Long financialRequestId){

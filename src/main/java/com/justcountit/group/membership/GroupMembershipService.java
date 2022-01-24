@@ -7,8 +7,12 @@ import com.justcountit.group.GroupService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserRepository;
 import com.justcountit.user.AppUserService;
+import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +35,17 @@ public class GroupMembershipService {
     public GroupMembership addUserToGroup(Long userId, Long groupId){
         Group group = groupRepository.findById(groupId).orElseThrow();
         AppUser appUser = appUserRepository.findById(userId).orElseThrow();
-        var sth = groupMembershipRepository.count();
+        var sth = groupMembershipRepository.getAllGroupMembers(groupId);
         // if group is empty new group member becomes organizer
-        if (sth == 0 ){
+        if (sth.isEmpty()){
             return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId,groupId),appUser, group, Role.ORGANIZER));
         }
         else {
             return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId, groupId), appUser, group, Role.MEMBER));
         }
+    }
+
+    public Set<AppUserWithRole> getGroupMembers(Long groupId){
+        return groupMembershipRepository.getAllGroupMembers(groupId);
     }
 }
