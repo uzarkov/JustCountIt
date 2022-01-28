@@ -36,9 +36,9 @@ public class AppUserController {
         appUserBalanceList = new ArrayList<>();
         Set<AppUserWithRole> appUserWithRoles = groupService.getGroupMember(groupId);
         for (var appUser: appUserWithRoles){
-            Set<Expenditure> expenditures =expenditureService.getUserExpendituresInsideGroup(appUser.getAppUser().getId(), groupId);
+//            Set<Expenditure> expenditures =expenditureService.getUserExpendituresInsideGroup(appUser.getAppUser().getId(), groupId);
             Set<FinancialRequest> financialRequests = financialRequestService.getUserFinancialRequests(appUser.getAppUser().getId(), groupId);
-            appUserBalanceList.add(new AppUserBalance(appUser.getAppUser(),expenditures,financialRequests));
+//            appUserBalanceList.add(new AppUserBalance(appUser.getAppUser(),expenditures,financialRequests));
 
         }
         getMyOwnings(userId);

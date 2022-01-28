@@ -1,18 +1,17 @@
 package com.justcountit.expenditure;
 
 import com.justcountit.group.Group;
-import com.justcountit.request.FinancialRequest;
 import com.justcountit.user.AppUser;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // For hibernate
 @Entity
 public class Expenditure {
 
@@ -29,7 +28,7 @@ public class Expenditure {
     private Long id;
 
     @Column(nullable = false)
-    private double price;
+    private Double price;
 
     @Column(nullable = false, length = 60)
     private String title;
@@ -43,9 +42,15 @@ public class Expenditure {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
-    private Group groupName;
+    private Group group;
 
-    @OneToMany(mappedBy = "expenditure")
-    private Set<FinancialRequest> financialRequests;
-
+    public Expenditure(Double price,
+                       String title,
+                       AppUser creator,
+                       Group group) {
+        this.price = price;
+        this.title = title;
+        this.creator = creator;
+        this.group = group;
+    }
 }

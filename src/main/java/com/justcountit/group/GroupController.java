@@ -56,7 +56,7 @@ public class GroupController {
     // You can add expenditure from some user in group and assign financialRequest to debtor, only for testing
     @PostMapping("/{groupId}/user/{userId}/debtor/{debtorId}")
     public void addExpenditureAndRequest( @PathVariable Long groupId, @PathVariable Long userId, @PathVariable Long debtorId){
-        service.addExpenditureAndRequest(groupId, userId, debtorId);
+//        service.addExpenditureAndRequest(groupId, userId, debtorId);
 
     }
 

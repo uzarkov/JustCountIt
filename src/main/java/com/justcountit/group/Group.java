@@ -43,7 +43,7 @@ public class Group {
     @OneToMany(mappedBy="group")
     private Set<GroupMembership> groupMembers;
 
-    @OneToMany(mappedBy="groupName")
+    @OneToMany(mappedBy= "group")
     private Set<Expenditure> expenditures;
 }
 

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 public class AppUserService {
     private final AppUserRepository appUserRepository;
 
+    public AppUser getUserById(Long id) {
+        return appUserRepository.findById(id).orElseThrow();
+    }
 
     public AppUser getUserByEmail(String email){
         return appUserRepository.getAppUserByEmail(email).orElseThrow();

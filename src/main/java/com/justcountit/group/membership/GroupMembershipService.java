@@ -20,6 +20,11 @@ public class GroupMembershipService {
     private final GroupMembershipRepository groupMembershipRepository;
     private final GroupRepository groupRepository;
     private final AppUserRepository appUserRepository;
+
+    public boolean isMemberOf(Long userId, Long groupId) {
+        return groupMembershipRepository.isMemberOf(userId, groupId);
+    }
+
     public boolean isOrganizer(Long userId, Long groupId){
         var groupMember = groupMembershipRepository.
                 findById(new GroupMembershipKey(userId,groupId)).
