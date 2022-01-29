@@ -21,7 +21,7 @@ public class FinancialRequestOptimizer {
         optimizeNetCashFlow(netCashFlow, groupId);
     }
 
-    private Map<Long, Double> calculateNetCashFlowIn(Set<FinancialRequest> financialRequests) {
+    public Map<Long, Double> calculateNetCashFlowIn(Set<FinancialRequest> financialRequests) {
         Map<Long, Double> result = new HashMap<>();
 
         for (var financialRequest : financialRequests) {

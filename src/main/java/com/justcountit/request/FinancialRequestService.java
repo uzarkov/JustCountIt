@@ -42,4 +42,13 @@ public class FinancialRequestService {
     public Set<FinancialRequest> getAllActiveFinancialRequestsIn(Long groupId) {
         return financialRequestRepository.getAllActiveInGroup(groupId);
     }
+
+    public boolean hasFinancialRequests(Long userId, Long groupId){
+
+        return !getUserFinancialRequests(userId, groupId).isEmpty();
+    }
+
+    public Set<FinancialRequest> getUserFinancialRequests(Long userId, Long groupId) {
+        return financialRequestRepository.getAllByDebtorAndExpenditure(userId, groupId);
+    }
 }

@@ -1,19 +1,17 @@
 package com.justcountit.group;
 
 import com.justcountit.group.membership.GroupMembershipService;
+import com.justcountit.group.validation.DeletingUserFromGroupException;
 import com.justcountit.user.AppUserService;
-import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.Objects;
-import java.util.Set;
+
 
 @RestController
-@RequestMapping("/api/group")
+@RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService service;
@@ -25,19 +23,19 @@ public class GroupController {
         return ResponseEntity.ok(service.getGroupMetadataFor(groupId));
     }
 
-    @DeleteMapping("members/{groupId}/user/{userId}")
-    public void deleteUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId, Principal principal){
+    @DeleteMapping("/{groupId}/user/{userId}")
+    public ResponseEntity<String> deleteUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId, Principal principal){
         var callerEmail = principal.getName();
-
         var callerId = appUserService.getUserId(callerEmail);
 
         var isOrganizer = groupMembershipService.isOrganizer(callerId, groupId);
         // possibility of deleting yourself from group
         if (isOrganizer || Objects.equals(callerId, userId)){
             service.deleteUserFromGroup(userId, groupId);
+            return ResponseEntity.ok("Deleted successfully");
         }
         else {
-            throw new AuthorizationServiceException("Go back to the Shadow! You shall not pass!");
+            throw DeletingUserFromGroupException.notAuthorized();
         }
 
     }
@@ -53,18 +51,23 @@ public class GroupController {
         System.out.println(userId);
         service.addUserToGroup(groupId, userId);
     }
-    // You can add expenditure from some user in group and assign financialRequest to debtor, only for testing
-    @PostMapping("/{groupId}/user/{userId}/debtor/{debtorId}")
-    public void addExpenditureAndRequest( @PathVariable Long groupId, @PathVariable Long userId, @PathVariable Long debtorId){
-//        service.addExpenditureAndRequest(groupId, userId, debtorId);
 
-    }
 
-    // Dorian's first use case, getting list of users with roles with current group
-    @GetMapping("/members/{groupId}")
-    public void getGroupMembers(@PathVariable Long groupId){
-        Set<AppUserWithRole>  usersInGroup = service.getGroupMember(groupId);
-    }
+//
+//    @GetMapping("/members/{groupId}")
+//    public List<UsersInGroupMetadata> getGroupMembers(@PathVariable Long groupId){
+//        Set<AppUserWithRole>  usersInGroup = service.getGroupMember(groupId);
+//        List<UsersInGroupMetadata> returnList = new ArrayList<>();
+//
+//        for(var i : usersInGroup){
+//            returnList.add(new UsersInGroupMetadata(i.getAppUser().getId(), i.getAppUser().getName(), i.getRole()));
+//        }
+//
+//        return returnList;
+//
+//
+//
+//    }
 
 
 
