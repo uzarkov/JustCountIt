@@ -13,10 +13,14 @@ export const doGet = async (endpoint, body = {}) => {
     })
 }
 
-export const doPost = async (endpoint, body = {}) => {
-    const headers = await addAuthorizationHeader({
+export const doPost = async (endpoint, body = {}, authorize = true) => {
+    let headers = {
         'Content-Type': 'application/json',
-    })
+    }
+
+    if (authorize) {
+        headers = await addAuthorizationHeader(headers)
+    }
 
     return fetch(APP_URL + endpoint, {
         method: 'POST',

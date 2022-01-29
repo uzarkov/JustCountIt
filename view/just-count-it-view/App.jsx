@@ -14,7 +14,7 @@ export default function App() {
       password: password,
     })
 
-    doPost("/api/auth/login", body)
+    doPost("/api/auth/login", body, false)
       .then(response => {
         if (!response.ok) {
           throw new Error("Invalid credentials")
