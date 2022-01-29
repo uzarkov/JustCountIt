@@ -28,6 +28,11 @@ public class ExpenditureValidationException extends RestException {
         return new ExpenditureValidationException(msg);
     }
 
+    public static ExpenditureValidationException pricePerDebtorOutOfBounds() {
+        var msg = "Price per debtor has to be greater or equal to 0.01";
+        return new ExpenditureValidationException(msg);
+    }
+
     public static ExpenditureValidationException debtorNotInGroup(String userName) {
         var msg = "User %s is not a member of the group".formatted(userName);
         return new ExpenditureValidationException(msg);

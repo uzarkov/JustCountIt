@@ -89,6 +89,21 @@ class ExpenditureValidatorSpec extends Specification {
     }
 
     def "validateExpenditureInput()\
+         WHEN price per debtor is too small\
+         SHOULD throw an exception"() {
+        given:
+        def tooSmallPrice = 0.0099999999999999d * sampleDebtors.size()
+        def expenditureInput = new ExpenditureInput(sampleTitle, tooSmallPrice, sampleDebtors)
+
+        when:
+        expenditureValidator.validateExpenditureInput(expenditureInput, sampleGroupId)
+
+        then:
+        def exception = thrown(ExpenditureValidationException)
+        exception.getMessage() == ExpenditureValidationException.pricePerDebtorOutOfBounds().getMessage()
+    }
+
+    def "validateExpenditureInput()\
          WHEN price is too large\
          SHOULD throw an exception"() {
         given:

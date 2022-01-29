@@ -15,19 +15,34 @@ public class ExpenditureValidator {
     private final GroupMembershipService groupMembershipService;
 
     public void validateExpenditureInput(ExpenditureInput expenditureInput, Long groupId) {
+        checkIfFieldsArePresent(expenditureInput);
         validateTitleOf(expenditureInput);
         validatePriceOf(expenditureInput);
         validateDebtorsIn(expenditureInput, groupId);
     }
 
-    private void validateTitleOf(ExpenditureInput expenditureInput) {
+    private void checkIfFieldsArePresent(ExpenditureInput expenditureInput) {
         var title = expenditureInput.title();
-
         if (title == null || title.isBlank()) {
             throw ExpenditureValidationException.blankField("title");
         }
 
-        if (title.length() > 60) {
+        var price = expenditureInput.price();
+        if (price == null) {
+            throw ExpenditureValidationException.blankField("price");
+        }
+
+        var debtorsIds = expenditureInput.debtorsIds();
+        if (debtorsIds == null) {
+            throw ExpenditureValidationException.blankField("debtorsIds");
+        }
+        if (debtorsIds.isEmpty()) {
+            throw ExpenditureValidationException.noDebtors();
+        }
+    }
+
+    private void validateTitleOf(ExpenditureInput expenditureInput) {
+        if (expenditureInput.title().length() > 60) {
             throw ExpenditureValidationException.titleOutOfBounds();
         }
     }
@@ -35,26 +50,22 @@ public class ExpenditureValidator {
     private void validatePriceOf(ExpenditureInput expenditureInput) {
         var price = expenditureInput.price();
 
-        if (price == null) {
-            throw ExpenditureValidationException.blankField("price");
-        }
-
-        var hasAtleastTwoFractionDigits = BigDecimal.valueOf(price).compareTo(BigDecimal.valueOf(0.01)) >= 0;
-        if (!hasAtleastTwoFractionDigits || price > 999_999_999) {
+        if (doesNotHaveTwoFractionDigits(price) || price > 999_999_999) {
             throw ExpenditureValidationException.priceOutOfBounds();
         }
+
+        var pricePerDebtor = price / expenditureInput.numberOfDebtors();
+        if (doesNotHaveTwoFractionDigits(pricePerDebtor)) {
+            throw ExpenditureValidationException.pricePerDebtorOutOfBounds();
+        }
+    }
+
+    private boolean doesNotHaveTwoFractionDigits(double price) {
+        return BigDecimal.valueOf(price).compareTo(BigDecimal.valueOf(0.01d)) < 0;
     }
 
     private void validateDebtorsIn(ExpenditureInput expenditureInput, Long groupId) {
         var debtorsIds = expenditureInput.debtorsIds();
-
-        if (debtorsIds == null) {
-            throw ExpenditureValidationException.blankField("debtorsIds");
-        }
-
-        if (debtorsIds.isEmpty()) {
-            throw ExpenditureValidationException.noDebtors();
-        }
 
         var debtors = debtorsIds.stream()
                                 .map(appUserService::getUserById)
