@@ -36,13 +36,13 @@ public class GroupService {
 
 
     public void deleteUserFromGroup(Long userId, Long groupId)  {
-        if (!financialRequestService.hasFinancialRequests(userId, groupId))
-        {
-            groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
-        }
-        else {
-            throw new RuntimeException("You cannot delete user with pending transaction");
-        }
+//        if (!financialRequestService.hasFinancialRequests(userId, groupId))
+//        {
+//            groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
+//        }
+//        else {
+//            throw new RuntimeException("You cannot delete user with pending transaction");
+//        }
 
 
     }
