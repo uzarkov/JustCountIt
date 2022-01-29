@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/group")
+@RequestMapping("/api/groups")
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService service;

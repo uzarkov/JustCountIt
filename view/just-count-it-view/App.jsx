@@ -9,10 +9,10 @@ export default function App() {
   const [user, setUser] = useState({ signedIn: false })
 
   const signIn = (email, password) => {
-    const body = JSON.stringify({
+    const body = {
       email: email,
       password: password,
-    })
+    }
 
     doPost("/api/auth/login", body, false)
       .then(response => {

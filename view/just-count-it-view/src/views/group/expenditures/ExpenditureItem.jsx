@@ -11,7 +11,7 @@ export const ExpenditureItem = ({ title, price, username, date, isSameUser, curr
         <View style={styles.container}>
             <View style={styles.textContainer}>
                 <Text style={styles.topText}>{title}</Text>
-                <Text style={[styles.topText, { textAlign: 'right' }]}>{price.toFixed(2)}{currencySymbol}</Text>
+                <Text style={[styles.topText, { textAlign: 'right' }]}>{`${price.toFixed(2)} ${currencySymbol}`}</Text>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.bottomText}>Zapłacone przez: {username}{isSameUser ? ' (Ja)' : ''}</Text>
