@@ -52,7 +52,7 @@ export const globalStyles = StyleSheet.create({
         marginTop: '1%',
         marginBottom: '10%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 5,
     },

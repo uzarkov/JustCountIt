@@ -4,18 +4,26 @@ import { AcceptModal } from "../../../components/common/AcceptModal"
 import { Accordion } from "../../../components/common/Accordion"
 import { styles } from "./GroupInfoViewStyles"
 import { MemberItem } from "./MemberItem"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import {RemoveGroupModal} from "./remove-group-modal/RemoveGroupModal";
 
 export const GroupInfoView = ({ user, groupMetadata }) => {
     const [openGroupInfo, setOpenGroupInfo] = useState(false)
     const [openGroupMembers, setOpenGroupMembers] = useState(false)
     const [openDeleteYourselfModal, setOpenDeleteYourselfModal] = useState(false)
     const [openedUserDeletionModal, setOpenedUserDeletionModal] = useState(undefined)
+    const [removeGroupModalOpened, setRemoveGroupModalOpened] = useState(false)
 
     const organizer = getOrganizer(groupMetadata)
     const removingEnabled = user.id === organizer.userId
 
     const removeUserFromGroup = (userId) => {
         // Remove user from group
+    }
+
+    const removeGroup = () => {
+        console.log(`Group ${groupMetadata.name} została pomyślnie usunięta`)
+        setRemoveGroupModalOpened(false)
     }
 
     return (
@@ -88,11 +96,28 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
                 }}
                 acceptText={"Tak"}
             />
-            <View style={{ flex: 0.15, flexDirection: 'row', alignItems: 'flex-end' }}>
+            <RemoveGroupModal
+                isVisible={removeGroupModalOpened}
+                onCancel={() => setRemoveGroupModalOpened(false)}
+                onAccept={() => removeGroup()}
+                //TODO: true = some financial requests are not solved, use api
+                withWarning={true}
+            />
+            <View style={{ flex: 0.15, flexDirection: 'row', alignItems: 'flex-end'}}>
                 <Pressable style={styles.bottomButton} onPress={() => setOpenDeleteYourselfModal(true)}>
                     <Text style={styles.actionButtonText}>{"OPUŚĆ GRUPĘ"}</Text>
                 </Pressable>
                 <View style={styles.buttonPlaceholder} />
+                {removingEnabled ? <Pressable
+                    style={styles.removeGroupButton}
+                    onPress={() => setRemoveGroupModalOpened(true)}
+                >
+                    <MaterialIcons
+                        name={"delete"}
+                        color={"black"}
+                        size={35}
+                    />
+                </Pressable> : <></>}
             </View>
         </View>
     )

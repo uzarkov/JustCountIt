@@ -47,4 +47,14 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    removeGroupButton: {
+        position: 'absolute',
+        right: 10,
+        backgroundColor: '#CF6679',
+        borderRadius: 50,
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        alignItems: "center",
+    }
 })
