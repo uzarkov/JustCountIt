@@ -5,6 +5,7 @@ import com.justcountit.group.Group
 import com.justcountit.group.GroupService
 import com.justcountit.group.membership.GroupMembershipException
 import com.justcountit.group.membership.GroupMembershipService
+import com.justcountit.request.FinancialRequestOptimizer
 import com.justcountit.request.FinancialRequestService
 import com.justcountit.user.AppUser
 import com.justcountit.user.AppUserService
@@ -19,12 +20,14 @@ class ExpenditureServiceSpec extends Specification {
     def groupService = Mock(GroupService)
     def groupMembershipService = Mock(GroupMembershipService)
     def financialRequestService = Mock(FinancialRequestService)
+    def financialRequestOptimizer = Mock(FinancialRequestOptimizer)
     def expenditureService = new ExpenditureService(expenditureValidator,
                                                     expenditureRepository,
                                                     appUserService,
                                                     groupService,
                                                     groupMembershipService,
-                                                    financialRequestService)
+                                                    financialRequestService,
+                                                    financialRequestOptimizer)
 
     def sampleUserId = 1L
     def sampleUserEmail = "sampleUser@mail.com"
@@ -109,6 +112,7 @@ class ExpenditureServiceSpec extends Specification {
         then:
         notThrown(GroupMembershipException)
         1 * financialRequestService.addFinancialRequests(sampleUserId, expectedDebts, sampleGroupId)
+        1 * financialRequestOptimizer.optimizeFinancialRequestsIn(sampleGroupId)
         1 * expenditureRepository.getById(_, ExpenditureMetadataProjection)
     }
 }
