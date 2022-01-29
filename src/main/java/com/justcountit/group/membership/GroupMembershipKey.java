@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "from")
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable

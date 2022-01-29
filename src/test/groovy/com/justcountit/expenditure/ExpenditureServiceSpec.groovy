@@ -5,6 +5,7 @@ import com.justcountit.group.Group
 import com.justcountit.group.GroupService
 import com.justcountit.group.membership.GroupMembershipException
 import com.justcountit.group.membership.GroupMembershipService
+import com.justcountit.request.FinancialRequestService
 import com.justcountit.user.AppUser
 import com.justcountit.user.AppUserService
 import spock.lang.Specification
@@ -17,11 +18,13 @@ class ExpenditureServiceSpec extends Specification {
     def appUserService = Mock(AppUserService)
     def groupService = Mock(GroupService)
     def groupMembershipService = Mock(GroupMembershipService)
+    def financialRequestService = Mock(FinancialRequestService)
     def expenditureService = new ExpenditureService(expenditureValidator,
                                                     expenditureRepository,
                                                     appUserService,
                                                     groupService,
-                                                    groupMembershipService)
+                                                    groupMembershipService,
+                                                    financialRequestService)
 
     def sampleUserId = 1L
     def sampleUserEmail = "sampleUser@mail.com"
@@ -36,7 +39,7 @@ class ExpenditureServiceSpec extends Specification {
         getEmail() >> sampleUserEmail
     }
 
-    def sampleInput = new ExpenditureInput("title", 9.99d, [1, 2, 3])
+    def sampleInput = new ExpenditureInput("title", 9.99d, [1L, 2L, 3L])
 
     def "getExpendituresMetadata()\
          WHEN caller is not a member of the requested group\
@@ -86,19 +89,26 @@ class ExpenditureServiceSpec extends Specification {
 
     def "addExpenditure()\
          WHEN caller is a member of the requested group and input is valid\
-         SHOULD add new expenditure"() {
+         SHOULD add new expenditure and financial requests"() {
         given:
         appUserService.getUserByEmail(sampleUserEmail) >> sampleUser
         groupMembershipService.isMemberOf(sampleUserId, sampleGroupId) >> true
         groupService.getGroupBy(sampleGroupId) >> Mock(Group)
         1 * expenditureRepository.save(_ as Expenditure) >> { Expenditure expenditure -> return expenditure }
 
+        and:
+        def expectedDebts = [
+                1L: sampleInput.pricePerDebtor(),
+                2L: sampleInput.pricePerDebtor(),
+                3L: sampleInput.pricePerDebtor(),
+        ]
+
         when:
         expenditureService.addExpenditure(sampleGroupId, principal, sampleInput)
 
         then:
         notThrown(GroupMembershipException)
-
+        1 * financialRequestService.addFinancialRequests(sampleUserId, expectedDebts, sampleGroupId)
         1 * expenditureRepository.getById(_, ExpenditureMetadataProjection)
     }
 }

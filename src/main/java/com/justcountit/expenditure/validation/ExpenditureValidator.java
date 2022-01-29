@@ -54,8 +54,7 @@ public class ExpenditureValidator {
             throw ExpenditureValidationException.priceOutOfBounds();
         }
 
-        var pricePerDebtor = price / expenditureInput.numberOfDebtors();
-        if (doesNotHaveTwoFractionDigits(pricePerDebtor)) {
+        if (doesNotHaveTwoFractionDigits(expenditureInput.pricePerDebtor())) {
             throw ExpenditureValidationException.pricePerDebtorOutOfBounds();
         }
     }

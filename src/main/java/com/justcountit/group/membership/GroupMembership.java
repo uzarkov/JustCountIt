@@ -34,7 +34,7 @@ public class GroupMembership {
     private Role role;
 
     public GroupMembership(AppUser user, Group group, Role role) {
-        this.id = new GroupMembershipKey(user.getId(), group.getId());
+        this.id = GroupMembershipKey.from(user.getId(), group.getId());
         this.appUser = user;
         this.group = group;
         this.role = role;

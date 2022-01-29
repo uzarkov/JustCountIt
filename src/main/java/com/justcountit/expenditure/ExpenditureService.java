@@ -4,13 +4,16 @@ import com.justcountit.expenditure.validation.ExpenditureValidator;
 import com.justcountit.group.GroupService;
 import com.justcountit.group.membership.GroupMembershipException;
 import com.justcountit.group.membership.GroupMembershipService;
+import com.justcountit.request.FinancialRequestService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class ExpenditureService {
     private final AppUserService appUserService;
     private final GroupService groupService;
     private final GroupMembershipService groupMembershipService;
+    private final FinancialRequestService financialRequestService;
 
     public Set<ExpenditureMetadataProjection> getExpendituresMetadata(Long groupId,
                                                                       Principal principal) {
@@ -36,6 +40,7 @@ public class ExpenditureService {
         checkIfUserIsMemberOfTheGroup(user, groupId);
         var expenditure = mapInputToExpenditure(expenditureInput, user, groupId);
         var addedExpenditure = expenditureRepository.save(expenditure);
+        createFinancialRequestsFrom(expenditureInput, user, groupId);
         return expenditureRepository.getById(addedExpenditure.getId(), ExpenditureMetadataProjection.class);
     }
 
@@ -55,5 +60,12 @@ public class ExpenditureService {
                                expenditureInput.title(),
                                user,
                                group);
+    }
+
+    private void createFinancialRequestsFrom(ExpenditureInput expenditureInput, AppUser debtee, Long groupId) {
+        Map<Long, Double> debts = expenditureInput.debtorsIds().stream()
+                        .collect(Collectors.toMap(debtorId -> debtorId, debtorId -> expenditureInput.pricePerDebtor()));
+
+        financialRequestService.addFinancialRequests(debtee.getId(), debts, groupId);
     }
 }
