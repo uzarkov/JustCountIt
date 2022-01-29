@@ -3,7 +3,10 @@ package com.justcountit.group.membership;
 import com.justcountit.commons.Role;
 import com.justcountit.group.Group;
 import com.justcountit.user.AppUser;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -30,17 +33,10 @@ public class GroupMembership {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public GroupMembership(GroupMembershipKey groupMembershipKey, Role role) {
-        id = groupMembershipKey;
-        this.role = role;
-        appUser = null;
-        group = null;
-
-    }
     public GroupMembership(AppUser user, Group group, Role role) {
-        this.role = role;
-        appUser = user;
+        this.id = GroupMembershipKey.from(user.getId(), group.getId());
+        this.appUser = user;
         this.group = group;
-
+        this.role = role;
     }
 }

@@ -20,16 +20,26 @@ public class GroupMembershipService {
     private final GroupMembershipRepository groupMembershipRepository;
     private final GroupRepository groupRepository;
     private final AppUserRepository appUserRepository;
+
+    public boolean isMemberOf(Long userId, Long groupId) {
+        return groupMembershipRepository.isMemberOf(userId, groupId);
+    }
+
+    public GroupMembership getMembership(Long userId, Long groupId) {
+        return groupMembershipRepository.findById(GroupMembershipKey.from(userId, groupId))
+                .orElseThrow();
+    }
+
     public boolean isOrganizer(Long userId, Long groupId){
         var groupMember = groupMembershipRepository.
-                findById(new GroupMembershipKey(userId,groupId)).
+                findById(GroupMembershipKey.from(userId, groupId)).
                 orElseThrow();
         return groupMember.getRole() == Role.ORGANIZER;
 
     }
 
     public void deleteUserFromGroupMembership(Long userId, Long groupId){
-        groupMembershipRepository.deleteById(new GroupMembershipKey(userId,groupId));
+        groupMembershipRepository.deleteById(GroupMembershipKey.from(userId,groupId));
     }
 
     public GroupMembership addUserToGroup(Long userId, Long groupId){
@@ -38,10 +48,10 @@ public class GroupMembershipService {
         var sth = groupMembershipRepository.getAllGroupMembers(groupId);
         // if group is empty new group member becomes organizer
         if (sth.isEmpty()){
-            return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId,groupId),appUser, group, Role.ORGANIZER));
+            return groupMembershipRepository.save(new GroupMembership(GroupMembershipKey.from(userId, groupId),appUser, group, Role.ORGANIZER));
         }
         else {
-            return groupMembershipRepository.save(new GroupMembership(new GroupMembershipKey(userId, groupId), appUser, group, Role.MEMBER));
+            return groupMembershipRepository.save(new GroupMembership(GroupMembershipKey.from(userId, groupId), appUser, group, Role.MEMBER));
         }
     }
 

@@ -1,13 +1,15 @@
 package com.justcountit.request;
 
 import com.justcountit.commons.Status;
-import com.justcountit.expenditure.Expenditure;
+import com.justcountit.group.membership.GroupMembership;
 import com.justcountit.user.AppUser;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -38,12 +40,30 @@ public class FinancialRequest {
     @Column(nullable = false)
     private Status status;
 
-    // TODO: Remove expenditure and add info about receiver and group
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "expenditure_id")
-    private Expenditure expenditure;
+    @JoinColumns({
+            @JoinColumn(name = "debtee_id", referencedColumnName = "appuser_id", nullable = false),
+            @JoinColumn(name = "group_id", referencedColumnName = "group_id", nullable = false)
+    })
+    private GroupMembership debtee;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "debtor_id")
     private AppUser debtor;
+
+    private FinancialRequest(double price,
+                             GroupMembership debtee,
+                             AppUser debtor,
+                             Status status) {
+        this.price = price;
+        this.debtee = debtee;
+        this.debtor = debtor;
+        this.status = status;
+    }
+
+    public static FinancialRequest create(double price,
+                                          GroupMembership debtee,
+                                          AppUser debtor) {
+        return new FinancialRequest(price, debtee, debtor, Status.UNACCEPTED);
+    }
 }
