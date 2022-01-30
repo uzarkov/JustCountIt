@@ -3,6 +3,7 @@ package com.justcountit.group;
 import com.justcountit.commons.Role;
 import com.justcountit.group.membership.GroupMembership;
 import com.justcountit.group.membership.GroupMembershipService;
+import com.justcountit.group.validation.DeletingUserFromGroupException;
 import com.justcountit.request.FinancialRequestService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserService;
@@ -42,13 +43,13 @@ public class GroupService {
 
 
     public void deleteUserFromGroup(Long userId, Long groupId)  {
-//        if (!financialRequestService.hasFinancialRequests(userId, groupId))
-//        {
-//            groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
-//        }
-//        else {
-//            throw new RuntimeException("You cannot delete user with pending transaction");
-//        }
+        if (!financialRequestService.hasFinancialRequests(userId, groupId))
+        {
+            groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
+        }
+        else {
+            throw DeletingUserFromGroupException.pendingTransaction();
+        }
 
 
     }
@@ -76,7 +77,7 @@ public class GroupService {
 
     }
 
-    public Set<AppUserWithRole>  getGroupMember(Long groupId){
+    public Set<AppUserWithRole> getGroupMember(Long groupId){
         return groupMembershipService.getGroupMembers(groupId);
     }
 

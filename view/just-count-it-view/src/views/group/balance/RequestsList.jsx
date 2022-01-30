@@ -91,6 +91,7 @@ const FinancialRequestForDebtor = ({ requestInfo, user, groupMetadata, onNotify,
                 <Pressable style={styles.leftButton} onPress={onNotify}>
                     <MaterialCommunityIcons
                         name={"bell"}
+
                         size={22}
                         style={{ paddingRight: 6 }}
                     />

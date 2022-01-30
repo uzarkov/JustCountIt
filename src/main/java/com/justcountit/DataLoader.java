@@ -2,6 +2,10 @@ package com.justcountit;
 
 import com.justcountit.commons.Currency;
 import com.justcountit.commons.Role;
+import com.justcountit.expenditure.Expenditure;
+import com.justcountit.expenditure.ExpenditureInput;
+import com.justcountit.expenditure.ExpenditureRepository;
+import com.justcountit.expenditure.ExpenditureService;
 import com.justcountit.group.Group;
 import com.justcountit.group.GroupRepository;
 import com.justcountit.group.membership.GroupMembership;
@@ -15,9 +19,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-@Profile("developer")
+//@Profile("developer")
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements ApplicationRunner
@@ -26,6 +34,7 @@ public class DataLoader implements ApplicationRunner
     private final GroupRepository groupRepository;
     private final GroupMembershipRepository groupMembershipRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ExpenditureService expenditureService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -40,6 +49,17 @@ public class DataLoader implements ApplicationRunner
         addUserToGroup(user2, group, Role.PAYMASTER);
         addUserToGroup(user3, group, Role.MEMBER);
         addUserToGroup(user4, group, Role.MEMBER);
+
+        List<Long> list1 = new ArrayList<>();
+        list1.add(2L);
+        list1.add(3L);
+        Principal pr = new Principal() {
+            @Override
+            public String getName() {
+                return "andrzej@test.com";
+            }
+        };
+        expenditureService.addExpenditure(group.getId(), pr, new ExpenditureInput("Test",25.5 , list1));
     }
 
     private AppUser addSampleUser(String name) {
