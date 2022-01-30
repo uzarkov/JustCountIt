@@ -3,13 +3,10 @@ package com.justcountit.group.membership;
 import com.justcountit.commons.Role;
 import com.justcountit.group.Group;
 import com.justcountit.group.GroupRepository;
-import com.justcountit.group.GroupService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserRepository;
-import com.justcountit.user.AppUserService;
 import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -53,6 +50,15 @@ public class GroupMembershipService {
         else {
             return groupMembershipRepository.save(new GroupMembership(GroupMembershipKey.from(userId, groupId), appUser, group, Role.MEMBER));
         }
+    }
+
+    public void addUserToGroup(AppUser user, Group group, Role role) {
+        var membershipKey = GroupMembershipKey.from(user.getId(), group.getId());
+        var membership = new GroupMembership(membershipKey, user, group, role);
+        user.joinGroup(membership);
+        group.addMembership(membership);
+
+        groupMembershipRepository.save(membership);
     }
 
     public Set<AppUserWithRole> getGroupMembers(Long groupId){

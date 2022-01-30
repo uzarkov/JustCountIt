@@ -1,19 +1,25 @@
 package com.justcountit.group;
 
+import com.justcountit.commons.Role;
 import com.justcountit.group.membership.GroupMembership;
 import com.justcountit.group.membership.GroupMembershipService;
 import com.justcountit.request.FinancialRequestService;
+import com.justcountit.user.AppUser;
+import com.justcountit.user.AppUserService;
 import com.justcountit.user.AppUserWithRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GroupService {
+
     private final GroupMembershipService groupMembershipService;
+    private final AppUserService appUserService;
     private final FinancialRequestService financialRequestService;
     private final GroupRepository groupRepository;
 
@@ -46,10 +52,25 @@ public class GroupService {
 
 
     }
-    public void addGroup(Group group){
-        groupRepository.save(group);
-
+    @Transactional
+    public GroupBaseData addGroup(Group group, String organizerEmail){
+        validateGroupData(group);
+        var user = appUserService.getUserByEmail(organizerEmail);
+        var newGroup = groupRepository.save(group);
+        addUserToGroup(user, newGroup, Role.ORGANIZER);
+        return GroupBaseData.from(newGroup);
     }
+
+    public void addUserToGroup(AppUser user, Group group, Role role) {
+        groupMembershipService.addUserToGroup(user, group, role);
+    }
+
+    private void validateGroupData(Group group) {
+        if (group.getName().length() < 1 || group.getCurrency() == null) {
+            throw WrongGroupDataException.wrongData();
+        }
+    }
+
     public void addUserToGroup(Long groupId, Long userId){
         GroupMembership groupMembership = groupMembershipService.addUserToGroup(userId,groupId);
 

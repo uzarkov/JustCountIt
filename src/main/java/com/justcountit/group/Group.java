@@ -6,6 +6,7 @@ import com.justcountit.expenditure.Expenditure;
 import com.justcountit.group.membership.GroupMembership;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -45,5 +46,17 @@ public class Group {
 
     @OneToMany(mappedBy= "group")
     private Set<Expenditure> expenditures;
+
+    public Group(String name, Currency currency) {
+        this.name = name;
+        this.currency = currency;
+        this.description = "";
+        this.groupMembers = new HashSet<>();
+        this.expenditures = new HashSet<>();
+    }
+
+    public void addMembership(GroupMembership membership) {
+        groupMembers.add(membership);
+    }
 }
 
