@@ -4,6 +4,7 @@ import {styles} from "./CreateGroupFormStyles";
 import {globalStyles} from "../../../styles/globalStyles";
 import DropDownPicker from 'react-native-dropdown-picker';
 import {doPost} from "../../../utils/fetchUtils";
+import {showErrorToast, showSuccessToast} from "../../../utils/toasts";
 
 export const CreateGroupForm = ({showModal, addGroup}) => {
 
@@ -22,19 +23,13 @@ export const CreateGroupForm = ({showModal, addGroup}) => {
 
     const validateCurrency = () => {
         if (currency === null) {
-            console.log("Nie wybrano waluty.\nWybierz jeden element z listy.")
-        }
-        else {
-            console.log(currency)
+            showErrorToast("Nie wybrano waluty.\nWybierz jeden element z listy.")
         }
     }
 
     const validateGroupName = () => {
         if (groupName.length < 1) {
-            console.log("Niepoprawna nazwa grupy.\nMinimalna długość to 1 znak.")
-        }
-        else {
-            console.log(groupName)
+            showErrorToast("Niepoprawna nazwa grupy.\nMinimalna długość to 1 znak.")
         }
     }
 
@@ -47,10 +42,9 @@ export const CreateGroupForm = ({showModal, addGroup}) => {
         doPost("/api/groups", body)
             .then(response => response.json())
             .then(json => addGroup(json))
+            .then(() => showSuccessToast(`Grupa ${groupName} została pomyślnie utworzona.`))
             .catch(error => console.log(error))
-
         showModal(false)
-        console.log(`Grupa ${groupName} została pomyślnie utworzona.`)
     }
 
 
