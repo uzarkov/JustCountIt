@@ -41,10 +41,10 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @OneToMany(mappedBy="group")
+    @OneToMany(mappedBy="group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupMembership> groupMembers;
 
-    @OneToMany(mappedBy= "group")
+    @OneToMany(mappedBy= "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Expenditure> expenditures;
 
     public Group(String name, Currency currency) {

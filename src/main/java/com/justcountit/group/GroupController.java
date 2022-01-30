@@ -46,6 +46,13 @@ public class GroupController {
         return ResponseEntity.ok(service.addGroup(groupData.toGroup(), organizerEmail));
     }
 
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Void> removeGroup(@PathVariable Long groupId, Principal principal) {
+        var callerName = principal.getName();
+        service.removeGroup(groupId, callerName);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{groupId}/user/{userId}")
     public void addUserToGroup( @PathVariable Long groupId, @PathVariable Long userId){
         System.out.println(groupId);

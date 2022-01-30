@@ -1,7 +1,9 @@
 package com.justcountit.group.membership;
 
 import com.justcountit.commons.Role;
+import com.justcountit.expenditure.Expenditure;
 import com.justcountit.group.Group;
+import com.justcountit.request.FinancialRequest;
 import com.justcountit.user.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,10 +37,14 @@ public class GroupMembership {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy= "debtee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FinancialRequest> requests;
+
     public GroupMembership(AppUser user, Group group, Role role) {
         this.id = GroupMembershipKey.from(user.getId(), group.getId());
         this.appUser = user;
         this.group = group;
         this.role = role;
+        this.requests = new HashSet<>();
     }
 }
