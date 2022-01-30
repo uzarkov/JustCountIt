@@ -4,10 +4,10 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { styles } from "./RequestsListStyles";
 import { AcceptModal } from "../../../components/common/AcceptModal";
-import { doGet } from "../../../utils/fetchUtils"
+import { doGet, doPatch } from "../../../utils/fetchUtils"
 
-export const RequestsList = ({ user, groupMetadata }) => {
-    const [financialRequests, setFinancialRequests] = useState({forDebtors:[], forMe:[]})
+export const RequestsList = ({ user, groupMetadata, fetchGroupBalance }) => {
+    const [financialRequests, setFinancialRequests] = useState({ forDebtors: [], forMe: [] })
     const fetchRequestList = () => {
         doGet(`/api/balance/${groupMetadata.id}/currentUser`)
             .then(response => response.json())
@@ -21,7 +21,15 @@ export const RequestsList = ({ user, groupMetadata }) => {
     const [openedAcceptModal, setOpenedAcceptModal] = useState(undefined)
 
     const acceptRequest = (requestId) => {
-        // TODO: Send request acceptance
+        doPatch(`/api/financial-requests/${requestId}/accept`)
+            .then(response => {
+                setFinancialRequests({
+                    ...financialRequests,
+                    forDebtors: financialRequests.forDebtors.filter(req => req.id !== requestId)
+                })
+                fetchGroupBalance()
+            })
+            .catch(err => console.log(err.message))
     }
 
     return (
@@ -47,7 +55,6 @@ export const RequestsList = ({ user, groupMetadata }) => {
                         isVisible={openedAcceptModal === request.id}
                         onCancel={() => setOpenedAcceptModal(undefined)}
                         onAccept={() => {
-                            setOpenedAcceptModal(undefined)
                             acceptRequest(request.id)
                         }}
                         acceptText={"Tak"}

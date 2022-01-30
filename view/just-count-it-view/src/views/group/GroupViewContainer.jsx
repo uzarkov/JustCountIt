@@ -7,7 +7,7 @@ import { GroupInfoView } from "./group-info/GroupInfoView"
 import { GroupNavigation, ROUTES } from "./GroupNavigation"
 import { styles } from "./GroupViewContainerStyles"
 
-export const GroupViewContainer = ({ user, groupMetadata, onExit }) => {
+export const GroupViewContainer = ({ user, groupMetadata, onExit, updateGroupMetadata }) => {
     const [showNavigation, setShowNavigation] = useState(true)
     const [currentView, setCurrentView] = useState(ROUTES.EXPENDITURES)
 
@@ -23,7 +23,7 @@ export const GroupViewContainer = ({ user, groupMetadata, onExit }) => {
                 )
             case ROUTES.GROUP_INFO:
                 return (
-                    <GroupInfoView user={user} groupMetadata={groupMetadata} setShowNavigation={setShowNavigation} />
+                    <GroupInfoView user={user} groupMetadata={groupMetadata} setShowNavigation={setShowNavigation} updateGroupMetadata={updateGroupMetadata} />
                 )
             default:
                 throw new Error("You shouldn't be here")

@@ -54,32 +54,6 @@ public class GroupController {
 
     @PostMapping("/{groupId}/user/{userId}")
     public void addUserToGroup( @PathVariable Long groupId, @PathVariable Long userId){
-        System.out.println(groupId);
-        System.out.println(userId);
         service.addUserToGroup(groupId, userId);
     }
-
-
-//
-//    @GetMapping("/members/{groupId}")
-//    public List<UsersInGroupMetadata> getGroupMembers(@PathVariable Long groupId){
-//        Set<AppUserWithRole>  usersInGroup = service.getGroupMember(groupId);
-//        List<UsersInGroupMetadata> returnList = new ArrayList<>();
-//
-//        for(var i : usersInGroup){
-//            returnList.add(new UsersInGroupMetadata(i.getAppUser().getId(), i.getAppUser().getName(), i.getRole()));
-//        }
-//
-//        return returnList;
-//
-//
-//
-//    }
-
-
-
-
-
-
-
 }

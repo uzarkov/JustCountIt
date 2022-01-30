@@ -42,6 +42,32 @@ export const doPost = async (endpoint, body = {}, authorize = true) => {
         .then(response => checkForError(response))
 }
 
+export const doPatch = async (endpoint, body = {}) => {
+    const headers = await addAuthorizationHeader({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    })
+
+    return fetch(APP_URL + endpoint, {
+        method: 'PATCH',
+        headers: headers,
+        body: JSON.stringify(body)
+    })
+        .then(response => checkForError(response))
+}
+
+export const doDelete = async (endpoint) => {
+    const headers = await addAuthorizationHeader({
+        'Accept': 'application/json',
+    })
+
+    return fetch(APP_URL + endpoint, {
+        method: 'DELETE',
+        headers: headers,
+    })
+        .then(response => checkForError(response))
+}
+
 const addAuthorizationHeader = async (headers) => {
     const jwt = await readData("JWT")
 
