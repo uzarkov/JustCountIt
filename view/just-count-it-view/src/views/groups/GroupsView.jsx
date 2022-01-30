@@ -43,6 +43,9 @@ export const GroupsView = ({ user, logout }) => {
 
     const updateGroupMetadata = (newGroupMetadata) => {
         setChosenGroup(newGroupMetadata)
+        if (newGroupMetadata === undefined) {
+            fetchGroupsMetadata()
+        }
     }
 
     if (chosenGroup) {

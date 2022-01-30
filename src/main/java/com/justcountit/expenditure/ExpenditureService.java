@@ -11,10 +11,12 @@ import com.justcountit.user.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,8 +68,14 @@ public class ExpenditureService {
     }
 
     private void createFinancialRequestsFrom(ExpenditureInput expenditureInput, AppUser debtee, Long groupId) {
-        Map<Long, Double> debts = expenditureInput.debtorsIds().stream()
-                        .collect(Collectors.toMap(debtorId -> debtorId, debtorId -> expenditureInput.pricePerDebtor()));
+        Map<Long, Double> debts = new HashMap<>();
+
+        for (var debtorId : expenditureInput.debtorsIds()) {
+            var pricePerDebtor = BigDecimal.valueOf(expenditureInput.pricePerDebtor())
+                    .setScale(2, RoundingMode.CEILING)
+                    .doubleValue();
+            debts.put(debtorId, pricePerDebtor);
+        }
 
         financialRequestService.addFinancialRequests(debtee.getId(), debts, groupId);
     }
