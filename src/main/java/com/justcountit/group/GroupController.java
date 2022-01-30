@@ -29,15 +29,9 @@ public class GroupController {
         var callerEmail = principal.getName();
         var callerId = appUserService.getUserId(callerEmail);
 
-        var isOrganizer = groupMembershipService.isOrganizer(callerId, groupId);
-        // possibility of deleting yourself from group
-        if (isOrganizer || Objects.equals(callerId, userId)){
-            service.deleteUserFromGroup(userId, groupId);
-            return ResponseEntity.ok("Deleted successfully");
-        }
-        else {
-            throw DeletingUserFromGroupException.notAuthorized();
-        }
+        service.checkIfOrganizer(callerId,groupId, userId);
+        String message  = service.deleteUserFromGroup(userId, groupId);
+        return ResponseEntity.ok(message);
 
     }
     @GetMapping
