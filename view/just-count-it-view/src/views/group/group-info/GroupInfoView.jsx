@@ -29,8 +29,19 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit
                     ...groupMetadata,
                     members: newMembers
                 })
+
+                if(response.ok)
+                    showSuccessToast(`Użytkownik został pomyślnie usunięty`)
+
             })
-            .catch(err => console.log(err.message))
+            .catch(err => {
+                setOpenedUserDeletionModal(undefined)
+                showErrorToast(err.message)
+            })
+
+
+
+
     }
 
     const deleteGroup = () => {
