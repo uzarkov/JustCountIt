@@ -1,6 +1,5 @@
 package com.justcountit.group
 
-import com.justcountit.group.membership.GroupMembershipRepository
 import com.justcountit.group.membership.GroupMembershipService
 import com.justcountit.group.validation.DeletingUserFromGroupException
 import com.justcountit.request.FinancialRequestService

@@ -54,16 +54,6 @@ public class AppUserController {
     public UserRequestMetadata getPersonalRequests(@PathVariable Long groupId, Principal principal) {
         var user = appUserService.getUserByEmail(principal.getName());
         Set<FinancialRequest> financialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
-        List<ForDebtorsMetadata> forDebtors = new ArrayList<>();
-        List<ForMeMetadata> forMe = new ArrayList<>();
-        for (var finReq : financialRequests) {
-            if (finReq.getDebtee().getAppUser().getId().equals(user.getId())) {
-                forDebtors.add(new ForDebtorsMetadata(finReq.getId(),finReq.getDebtor().getId(), finReq.getPrice()));
-            } else if (finReq.getDebtor().getId().equals(user.getId())) {
-                forMe.add(new ForMeMetadata(finReq.getId(), finReq.getDebtee().getAppUser().getId(), finReq.getPrice()));
-            }
-        }
-
-    return new UserRequestMetadata(forDebtors,forMe);
+        return appUserService.getUserRequestMetadata(financialRequests,user.getId());
     }
 }
