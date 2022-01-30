@@ -66,4 +66,8 @@ public class AppUser {
     public User toUser() {
         return new User(email, password, Collections.emptyList());
     }
+
+    public void joinGroup(GroupMembership membership) {
+       groups.add(membership);
+    }
 }

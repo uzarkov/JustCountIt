@@ -43,8 +43,9 @@ public class GroupController {
     }
 
     @PostMapping
-    public void addGroup(@RequestBody Group group){
-        service.addGroup(group);
+    public ResponseEntity<GroupBaseData> addGroup(@RequestBody GroupBaseData groupData, Principal principal){
+        var organizerEmail = principal.getName();
+        return ResponseEntity.ok(service.addGroup(groupData.toGroup(), organizerEmail));
     }
 
     @PostMapping("/{groupId}/user/{userId}")
