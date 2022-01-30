@@ -7,7 +7,7 @@ import { GroupInfoView } from "./group-info/GroupInfoView"
 import { GroupNavigation, ROUTES } from "./GroupNavigation"
 import { styles } from "./GroupViewContainerStyles"
 
-export const GroupViewContainer = ({ user, groupMetadata, onExit, updateGroupMetadata }) => {
+export const GroupViewContainer = ({ user, groupMetadata, onExit, updateGroupMetadata, removeGroup }) => {
     const [showNavigation, setShowNavigation] = useState(true)
     const [currentView, setCurrentView] = useState(ROUTES.EXPENDITURES)
 
@@ -15,15 +15,30 @@ export const GroupViewContainer = ({ user, groupMetadata, onExit, updateGroupMet
         switch (currentView) {
             case ROUTES.BALANCE:
                 return (
-                    <BalanceView user={user} groupMetadata={groupMetadata} setShowNavigation={setShowNavigation} />
+                    <BalanceView
+                        user={user}
+                        groupMetadata={groupMetadata}
+                        setShowNavigation={setShowNavigation}
+                    />
                 )
             case ROUTES.EXPENDITURES:
                 return (
-                    <ExpendituresView user={user} groupMetadata={groupMetadata} setShowNavigation={setShowNavigation} />
+                    <ExpendituresView
+                        user={user}
+                        groupMetadata={groupMetadata}
+                        setShowNavigation={setShowNavigation}
+                    />
                 )
             case ROUTES.GROUP_INFO:
                 return (
-                    <GroupInfoView user={user} groupMetadata={groupMetadata} setShowNavigation={setShowNavigation} updateGroupMetadata={updateGroupMetadata} />
+                    <GroupInfoView
+                        user={user}
+                        groupMetadata={groupMetadata}
+                        setShowNavigation={setShowNavigation}
+                        updateGroupMetadata={updateGroupMetadata}
+                        onExit={onExit}
+                        removeGroup={removeGroup}
+                    />
                 )
             default:
                 throw new Error("You shouldn't be here")

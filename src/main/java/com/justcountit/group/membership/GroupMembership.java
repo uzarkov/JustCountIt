@@ -1,7 +1,6 @@
 package com.justcountit.group.membership;
 
 import com.justcountit.commons.Role;
-import com.justcountit.expenditure.Expenditure;
 import com.justcountit.group.Group;
 import com.justcountit.request.FinancialRequest;
 import com.justcountit.user.AppUser;
@@ -37,7 +36,7 @@ public class GroupMembership {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy= "debtee", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy= "debtee", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<FinancialRequest> requests;
 
     public GroupMembership(AppUser user, Group group, Role role) {

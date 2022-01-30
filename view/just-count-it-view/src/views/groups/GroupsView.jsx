@@ -37,6 +37,10 @@ export const GroupsView = ({ user, logout }) => {
         setGroups([group, ...groups])
     }
 
+    const removeGroup = (groupId) => {
+        setGroups(groups.filter(g => g.id !== groupId))
+    }
+
     const updateGroupMetadata = (newGroupMetadata) => {
         setChosenGroup(newGroupMetadata)
     }
@@ -48,6 +52,7 @@ export const GroupsView = ({ user, logout }) => {
                 groupMetadata={chosenGroup}
                 onExit={() => setChosenGroup(undefined)}
                 updateGroupMetadata={updateGroupMetadata}
+                removeGroup={removeGroup}
             />
         )
     }
@@ -66,10 +71,10 @@ export const GroupsView = ({ user, logout }) => {
                         data={groups}
                         renderItem={({ item }) => (
                             <GroupItem
-                                key={item.Id}
+                                key={item.id}
                                 name={item.name}
                                 description={item.description}
-                                onClick={() => fetchSpecificGroup(item.Id)}
+                                onClick={() => fetchSpecificGroup(item.id)}
                             />
                         )}
                     />

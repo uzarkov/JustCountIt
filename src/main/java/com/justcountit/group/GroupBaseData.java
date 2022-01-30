@@ -2,7 +2,7 @@ package com.justcountit.group;
 
 import com.justcountit.commons.Currency;
 
-public record GroupBaseData(Long Id, String name, String description, Currency currency ) {
+public record GroupBaseData(Long id, String name, String description, Currency currency ) {
 
     public GroupBaseData(String name, Currency currency) {
         this(null, name, name, currency);

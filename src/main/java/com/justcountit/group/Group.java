@@ -17,6 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "tour_group")
+@EqualsAndHashCode
 public class Group {
 
     @Id
@@ -41,10 +42,10 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @OneToMany(mappedBy="group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="group", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<GroupMembership> groupMembers;
 
-    @OneToMany(mappedBy= "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy= "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Expenditure> expenditures;
 
     public Group(String name, Currency currency) {
