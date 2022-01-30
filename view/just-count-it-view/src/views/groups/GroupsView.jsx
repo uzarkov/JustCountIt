@@ -37,12 +37,17 @@ export const GroupsView = ({ user, logout }) => {
         setGroups([group, ...groups])
     }
 
+    const updateGroupMetadata = (newGroupMetadata) => {
+        setChosenGroup(newGroupMetadata)
+    }
+
     if (chosenGroup) {
         return (
             <GroupViewContainer
                 user={user}
                 groupMetadata={chosenGroup}
                 onExit={() => setChosenGroup(undefined)}
+                updateGroupMetadata={updateGroupMetadata}
             />
         )
     }

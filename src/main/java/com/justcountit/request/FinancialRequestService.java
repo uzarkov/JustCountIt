@@ -1,11 +1,13 @@
 package com.justcountit.request;
 
+import com.justcountit.commons.Status;
 import com.justcountit.group.membership.GroupMembershipService;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,12 +41,21 @@ public class FinancialRequestService {
         financialRequestRepository.save(financialRequestToAdd);
     }
 
+    public void acceptFinancialRequest(Long requestId, Principal principal) {
+        var user = appUserService.getUserByEmail(principal.getName());
+        var financialRequest = financialRequestRepository.findById(requestId).orElseThrow();
+        if (!financialRequest.getDebtee().getAppUser().equals(user)) {
+            throw new RuntimeException();
+        }
+        financialRequest.setStatus(Status.ACCEPTED);
+        financialRequestRepository.save(financialRequest);
+    }
+
     public Set<FinancialRequest> getAllActiveFinancialRequestsIn(Long groupId) {
         return financialRequestRepository.getAllActiveInGroup(groupId);
     }
 
     public boolean hasFinancialRequests(Long userId, Long groupId){
-
         return !getUserFinancialRequests(userId, groupId).isEmpty();
     }
 

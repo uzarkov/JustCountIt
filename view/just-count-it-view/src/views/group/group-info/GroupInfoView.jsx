@@ -5,9 +5,10 @@ import { Accordion } from "../../../components/common/Accordion"
 import { styles } from "./GroupInfoViewStyles"
 import { MemberItem } from "./MemberItem"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import {RemoveGroupModal} from "./remove-group-modal/RemoveGroupModal";
+import { RemoveGroupModal } from "./remove-group-modal/RemoveGroupModal";
+import { doDelete } from "../../../utils/fetchUtils"
 
-export const GroupInfoView = ({ user, groupMetadata }) => {
+export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata }) => {
     const [openGroupInfo, setOpenGroupInfo] = useState(false)
     const [openGroupMembers, setOpenGroupMembers] = useState(false)
     const [openDeleteYourselfModal, setOpenDeleteYourselfModal] = useState(false)
@@ -18,7 +19,16 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
     const removingEnabled = user.id === organizer.userId
 
     const removeUserFromGroup = (userId) => {
-        // Remove user from group
+        doDelete(`/api/groups/${groupMetadata.id}/user/${userId}`)
+            .then(response => {
+                const newMembers = { ...groupMetadata.members }
+                delete newMembers[userId]
+                updateGroupMetadata({
+                    ...groupMetadata,
+                    members: newMembers
+                })
+            })
+            .catch(err => console.log(err.message))
     }
 
     const removeGroup = () => {
@@ -69,7 +79,6 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
                                 isVisible={openedUserDeletionModal === m.userId}
                                 onCancel={() => setOpenedUserDeletionModal(undefined)}
                                 onAccept={() => {
-                                    setOpenedUserDeletionModal(undefined)
                                     removeUserFromGroup(m.userId)
                                 }}
                                 acceptText={"Tak"}
@@ -79,7 +88,7 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
                             <MemberItem
                                 key={m.userId}
                                 member={m}
-                                removingEnabled={removingEnabled}
+                                removingEnabled={removingEnabled && m.userId !== user.id}
                                 onRemove={() => setOpenedUserDeletionModal(m.userId)}
                             />
                         ))}
@@ -91,7 +100,6 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
                 isVisible={openDeleteYourselfModal}
                 onCancel={() => setOpenDeleteYourselfModal(false)}
                 onAccept={() => {
-                    setOpenDeleteYourselfModal(false)
                     removeUserFromGroup(user.id)
                 }}
                 acceptText={"Tak"}
@@ -103,7 +111,7 @@ export const GroupInfoView = ({ user, groupMetadata }) => {
                 //TODO: true = some financial requests are not solved, use api
                 withWarning={true}
             />
-            <View style={{ flex: 0.15, flexDirection: 'row', alignItems: 'flex-end'}}>
+            <View style={{ flex: 0.15, flexDirection: 'row', alignItems: 'flex-end' }}>
                 <Pressable style={styles.bottomButton} onPress={() => setOpenDeleteYourselfModal(true)}>
                     <Text style={styles.actionButtonText}>{"OPUŚĆ GRUPĘ"}</Text>
                 </Pressable>
