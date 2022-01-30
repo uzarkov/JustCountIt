@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -38,6 +39,11 @@ public class GroupController {
             throw DeletingUserFromGroupException.notAuthorized();
         }
 
+    }
+    @GetMapping
+    public ResponseEntity<List<GroupBaseData>> getAllGroups(Principal principal) {
+        var userEmail = principal.getName();
+        return ResponseEntity.ok(service.getAllGroups(userEmail));
     }
 
     @PostMapping

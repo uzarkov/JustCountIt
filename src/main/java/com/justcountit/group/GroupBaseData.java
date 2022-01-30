@@ -2,10 +2,10 @@ package com.justcountit.group;
 
 import com.justcountit.commons.Currency;
 
-public record GroupBaseData(Long Id, String name, Currency currency ) {
+public record GroupBaseData(Long Id, String name, String description, Currency currency ) {
 
     public GroupBaseData(String name, Currency currency) {
-        this(null, name, currency);
+        this(null, name, name, currency);
     }
 
     public Group toGroup() {
@@ -13,6 +13,6 @@ public record GroupBaseData(Long Id, String name, Currency currency ) {
     }
 
     public static GroupBaseData from(Group group) {
-        return new GroupBaseData(group.getId(), group.getName(), group.getCurrency());
+        return new GroupBaseData(group.getId(), group.getName(), group.getDescription(), group.getCurrency());
     }
 }

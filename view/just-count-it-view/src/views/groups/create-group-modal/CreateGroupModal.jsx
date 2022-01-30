@@ -5,7 +5,7 @@ import {globalStyles} from "../../../styles/globalStyles";
 import {styles} from "./CreateGroupModalStyles";
 import {CreateGroupForm} from "../create-group-form/CreateGroupForm";
 
-export const CreateGroupModal = ({modalVisible,  setModalVisible}) => {
+export const CreateGroupModal = ({modalVisible,  setModalVisible, addGroup}) => {
 
     return (
         <Modal
@@ -22,7 +22,10 @@ export const CreateGroupModal = ({modalVisible,  setModalVisible}) => {
                             Tworzenie grupy
                         </Text>
                     </View>
-                    <CreateGroupForm showModal={setModalVisible}/>
+                    <CreateGroupForm
+                        showModal={setModalVisible}
+                        addGroup={addGroup}
+                    />
                 </View>
             </View>
 
