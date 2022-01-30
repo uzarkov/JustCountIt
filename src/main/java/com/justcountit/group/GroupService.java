@@ -2,6 +2,7 @@ package com.justcountit.group;
 
 import com.justcountit.commons.Role;
 import com.justcountit.group.membership.GroupMembership;
+import com.justcountit.group.membership.GroupMembershipException;
 import com.justcountit.group.membership.GroupMembershipService;
 import com.justcountit.group.validation.DeletingUserFromGroupException;
 import com.justcountit.request.FinancialRequestService;
@@ -67,6 +68,17 @@ public class GroupService {
         var newGroup = groupRepository.save(group);
         addUserToGroup(user, newGroup, Role.ORGANIZER);
         return GroupBaseData.from(newGroup);
+    }
+
+    @Transactional
+    public void removeGroup(Long groupId, String email) {
+        var userId = appUserService.getUserByEmail(email).getId();
+        if (groupMembershipService.isOrganizer(userId, groupId)) {
+            groupRepository.removeById(groupId);
+        }
+        else {
+            throw GroupMembershipException.principalNotOrganizer();
+        }
     }
 
     public void addUserToGroup(AppUser user, Group group, Role role) {
