@@ -50,7 +50,7 @@ public class Group {
     public Group(String name, Currency currency) {
         this.name = name;
         this.currency = currency;
-        this.description = "";
+        this.description = name;
         this.groupMembers = new HashSet<>();
         this.expenditures = new HashSet<>();
     }

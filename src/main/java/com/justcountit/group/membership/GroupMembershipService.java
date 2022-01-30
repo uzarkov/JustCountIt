@@ -2,6 +2,7 @@ package com.justcountit.group.membership;
 
 import com.justcountit.commons.Role;
 import com.justcountit.group.Group;
+import com.justcountit.group.GroupBaseData;
 import com.justcountit.group.GroupRepository;
 import com.justcountit.user.AppUser;
 import com.justcountit.user.AppUserRepository;
@@ -17,6 +18,10 @@ public class GroupMembershipService {
     private final GroupMembershipRepository groupMembershipRepository;
     private final GroupRepository groupRepository;
     private final AppUserRepository appUserRepository;
+
+    public List<GroupBaseData> getAllUserGroups(Long userId){
+        return groupMembershipRepository.getAllUserGroups(userId);
+    }
 
     public boolean isMemberOf(Long userId, Long groupId) {
         return groupMembershipRepository.isMemberOf(userId, groupId);

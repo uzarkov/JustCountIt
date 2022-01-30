@@ -3,9 +3,9 @@ import {Pressable, Text, TextInput, View} from "react-native";
 import {styles} from "./CreateGroupFormStyles";
 import {globalStyles} from "../../../styles/globalStyles";
 import DropDownPicker from 'react-native-dropdown-picker';
+import {doPost} from "../../../utils/fetchUtils";
 
-
-export const CreateGroupForm = ({showModal}) => {
+export const CreateGroupForm = ({showModal, addGroup}) => {
 
     const [pickerOpened, setPickerOpened] = useState(false);
     const [pickerActionPerformed, setPickerActionPerformed] = useState(false);
@@ -39,10 +39,20 @@ export const CreateGroupForm = ({showModal}) => {
     }
 
     const onCreate = () => {
-        console.log(`Grupa ${groupName} została pomyślnie utworzona.`)
-        console.log(`Waluta: ${currency}`)
+        const body = {
+            name: groupName,
+            currency: currency
+        }
+
+        doPost("/api/groups", body)
+            .then(response => response.json())
+            .then(json => addGroup(json))
+            .catch(error => console.log(error))
+
         showModal(false)
+        console.log(`Grupa ${groupName} została pomyślnie utworzona.`)
     }
+
 
     if (pickerActionPerformed) {
         validateCurrency();

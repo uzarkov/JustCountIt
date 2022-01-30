@@ -15,19 +15,27 @@ export const GroupsView = ({ user, logout }) => {
     const [createGroupModalOpened, isCreateGroupModalOpened] = useState(false);
     const [groups, setGroups] = useState([]);
 
-    // TODO: Change that to fetch all groups
-    // available to signed-in user when such 
-    // endpoint is available
     const fetchGroupsMetadata = () => {
-        doGet('/api/groups/1/metadata')
+        doGet('/api/groups')
             .then(response => response.json())
-            .then(json => setGroups([json]))
+            .then(json => setGroups(json))
+            .catch(err => console.log(err))
+    }
+
+    const fetchSpecificGroup = (groupId) => {
+        doGet(`/api/groups/${groupId}/metadata`)
+            .then(response => response.json())
+            .then(json => setChosenGroup(json))
             .catch(err => console.log(err))
     }
 
     useEffect(() => {
         fetchGroupsMetadata()
     }, [])
+
+    const addGroup = (group) => {
+        setGroups([group, ...groups])
+    }
 
     if (chosenGroup) {
         return (
@@ -53,10 +61,10 @@ export const GroupsView = ({ user, logout }) => {
                         data={groups}
                         renderItem={({ item }) => (
                             <GroupItem
-                                key={item.id}
+                                key={item.Id}
                                 name={item.name}
                                 description={item.description}
-                                onClick={() => setChosenGroup(item)}
+                                onClick={() => fetchSpecificGroup(item.Id)}
                             />
                         )}
                     />
@@ -65,6 +73,7 @@ export const GroupsView = ({ user, logout }) => {
             <CreateGroupModal
                 modalVisible={createGroupModalOpened}
                 setModalVisible={isCreateGroupModalOpened}
+                addGroup={addGroup}
             />
             <ActionButton
                 buttonColor="#BB86FC"

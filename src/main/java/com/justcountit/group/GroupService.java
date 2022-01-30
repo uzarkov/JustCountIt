@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,12 @@ public class GroupService {
 
 
     }
+
+    public List<GroupBaseData> getAllGroups(String userEmail) {
+        var user = appUserService.getUserByEmail(userEmail);
+        return groupMembershipService.getAllUserGroups(user.getId());
+    }
+
     @Transactional
     public GroupBaseData addGroup(Group group, String organizerEmail){
         validateGroupData(group);
