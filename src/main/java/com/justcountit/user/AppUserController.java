@@ -33,21 +33,12 @@ public class AppUserController {
 
     @GetMapping("/{groupId}")
     public List<UserBalanceMetadata> getGroupBalance(@PathVariable Long groupId) {
-        List<UserBalanceMetadata> userBalanceMetadata = new ArrayList<>();
         Set<AppUserWithRole> appUserWithRoles = groupService.getGroupMember(groupId);
         Set<FinancialRequest> financialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
-
         Map<Long, Double> balanceMap = financialRequestOptimizer.calculateNetCashFlowIn(financialRequests);
-        for (var user : appUserWithRoles) {
-            balanceMap.putIfAbsent(user.getAppUser().getId(), 0d);
-        }
 
-        for (Map.Entry<Long, Double> entry : balanceMap.entrySet()) {
-            AppUser currUser = appUserWithRoles.stream().map(AppUserWithRole::getAppUser).filter(a -> Objects.equals(a.getId(), entry.getKey())).findFirst().orElseThrow();
-            userBalanceMetadata.add(new UserBalanceMetadata(entry.getKey(), currUser.getName(), entry.getValue()));
-        }
+        return appUserService.processData(appUserWithRoles,balanceMap);
 
-        return userBalanceMetadata;
     }
 
     @GetMapping("/{groupId}/currentUser")

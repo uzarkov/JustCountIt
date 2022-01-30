@@ -27,6 +27,7 @@ public class GroupService {
     private final FinancialRequestService financialRequestService;
     private final GroupRepository groupRepository;
 
+
     public GroupMetadata getGroupMetadataFor(Long groupId) {
         var group = groupRepository.findById(groupId).orElseThrow();
         var members = group.getGroupMembers().stream()

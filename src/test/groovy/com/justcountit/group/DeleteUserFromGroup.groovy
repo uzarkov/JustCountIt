@@ -42,21 +42,6 @@ class DeleteUserFromGroup extends Specification {
         ex.getMessage() == DeletingUserFromGroupException.notAuthorized().getMessage()
     }
 
-    def "deleteUserFromGroup()\
-         WHEN caller is not organizer and wants to delete himself\
-         SHOULD throw an exception"() {
-        given:
-        principal.getName() >> sampleUserEmail
-        appUserService.getUserId(sampleUserEmail) >> sampleCallerId
-        groupMembershipService.isOrganizer(sampleCallerId,sampleGroupId) >> false
-
-        when:
-        groupService.checkIfOrganizer(sampleCallerId,sampleGroupId, sampleUserId)
-
-        then:
-        def ex = thrown(DeletingUserFromGroupException)
-        ex.getMessage() == DeletingUserFromGroupException.notAuthorized().getMessage()
-    }
 
     def "deleteUserFromGroup()\
          WHEN caller is organizer but the person which is going to be deleted its himself\
@@ -73,6 +58,25 @@ class DeleteUserFromGroup extends Specification {
         def ex = thrown(DeletingUserFromGroupException)
         ex.getMessage() == DeletingUserFromGroupException.notAuthorized().getMessage()
     }
+
+
+    def "deleteUserFromGroup()\
+         WHEN caller is not organizer and wants to delete himself\
+         SHOULD throw an exception"() {
+        given:
+        principal.getName() >> sampleUserEmail
+        appUserService.getUserId(sampleUserEmail) >> sampleCallerId
+        groupMembershipService.isOrganizer(sampleCallerId,sampleGroupId) >> false
+
+        when:
+        groupService.checkIfOrganizer(sampleCallerId,sampleGroupId, sampleUserId)
+
+        then:
+        def ex = thrown(DeletingUserFromGroupException)
+        ex.getMessage() == DeletingUserFromGroupException.notAuthorized().getMessage()
+    }
+
+
 
     def "deleteUserFromGroup()\
          WHEN caller is organizer but the person which is going to be deleted has pending transactions\
