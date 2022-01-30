@@ -38,6 +38,10 @@ public class AppUserController {
         Set<FinancialRequest> financialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
 
         Map<Long, Double> balanceMap = financialRequestOptimizer.calculateNetCashFlowIn(financialRequests);
+        for (var user : appUserWithRoles) {
+            balanceMap.putIfAbsent(user.getAppUser().getId(), 0d);
+        }
+
         for (Map.Entry<Long, Double> entry : balanceMap.entrySet()) {
             AppUser currUser = appUserWithRoles.stream().map(AppUserWithRole::getAppUser).filter(a -> Objects.equals(a.getId(), entry.getKey())).findFirst().orElseThrow();
             userBalanceMetadata.add(new UserBalanceMetadata(entry.getKey(), currUser.getName(), entry.getValue()));
@@ -52,14 +56,12 @@ public class AppUserController {
         Set<FinancialRequest> financialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
         List<ForDebtorsMetadata> forDebtors = new ArrayList<>();
         List<ForMeMetadata> forMe = new ArrayList<>();
-        int counter =1;
         for (var finReq : financialRequests) {
-            if (finReq.getDebtee().getAppUser().getId() == user.getId()) {
-                forDebtors.add(new ForDebtorsMetadata(counter,finReq.getDebtor().getId(), finReq.getPrice()));
-            } else if (finReq.getDebtor().getId() == user.getId()) {
-                forMe.add(new ForMeMetadata(counter, finReq.getDebtee().getAppUser().getId(), finReq.getPrice()));
+            if (finReq.getDebtee().getAppUser().getId().equals(user.getId())) {
+                forDebtors.add(new ForDebtorsMetadata(finReq.getId(),finReq.getDebtor().getId(), finReq.getPrice()));
+            } else if (finReq.getDebtor().getId().equals(user.getId())) {
+                forMe.add(new ForMeMetadata(finReq.getId(), finReq.getDebtee().getAppUser().getId(), finReq.getPrice()));
             }
-            counter++;
         }
 
     return new UserRequestMetadata(forDebtors,forMe);

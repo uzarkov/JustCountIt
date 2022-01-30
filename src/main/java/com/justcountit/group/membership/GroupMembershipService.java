@@ -37,7 +37,6 @@ public class GroupMembershipService {
                 findById(GroupMembershipKey.from(userId, groupId)).
                 orElseThrow();
         return groupMember.getRole() == Role.ORGANIZER;
-
     }
 
     public String deleteUserFromGroupMembership(Long userId, Long groupId){
@@ -51,19 +50,17 @@ public class GroupMembershipService {
         var sth = groupMembershipRepository.getAllGroupMembers(groupId);
         // if group is empty new group member becomes organizer
         if (sth.isEmpty()){
-            return groupMembershipRepository.save(new GroupMembership(GroupMembershipKey.from(userId, groupId),appUser, group, Role.ORGANIZER));
+            return groupMembershipRepository.save(new GroupMembership(appUser, group, Role.ORGANIZER));
         }
         else {
-            return groupMembershipRepository.save(new GroupMembership(GroupMembershipKey.from(userId, groupId), appUser, group, Role.MEMBER));
+            return groupMembershipRepository.save(new GroupMembership(appUser, group, Role.MEMBER));
         }
     }
 
     public void addUserToGroup(AppUser user, Group group, Role role) {
-        var membershipKey = GroupMembershipKey.from(user.getId(), group.getId());
-        var membership = new GroupMembership(membershipKey, user, group, role);
+        var membership = new GroupMembership(user, group, role);
         user.joinGroup(membership);
         group.addMembership(membership);
-
         groupMembershipRepository.save(membership);
     }
 

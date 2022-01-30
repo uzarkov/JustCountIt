@@ -46,34 +46,15 @@ public class GroupController {
         return ResponseEntity.ok(service.addGroup(groupData.toGroup(), organizerEmail));
     }
 
-    @PostMapping("/{groupId}/user/{userId}")
-    public void addUserToGroup( @PathVariable Long groupId, @PathVariable Long userId){
-        System.out.println(groupId);
-        System.out.println(userId);
-        service.addUserToGroup(groupId, userId);
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Void> removeGroup(@PathVariable Long groupId, Principal principal) {
+        var callerName = principal.getName();
+        service.removeGroup(groupId, callerName);
+        return ResponseEntity.noContent().build();
     }
 
-
-//
-//    @GetMapping("/members/{groupId}")
-//    public List<UsersInGroupMetadata> getGroupMembers(@PathVariable Long groupId){
-//        Set<AppUserWithRole>  usersInGroup = service.getGroupMember(groupId);
-//        List<UsersInGroupMetadata> returnList = new ArrayList<>();
-//
-//        for(var i : usersInGroup){
-//            returnList.add(new UsersInGroupMetadata(i.getAppUser().getId(), i.getAppUser().getName(), i.getRole()));
-//        }
-//
-//        return returnList;
-//
-//
-//
-//    }
-
-
-
-
-
-
-
+    @PostMapping("/{groupId}/user/{userId}")
+    public void addUserToGroup( @PathVariable Long groupId, @PathVariable Long userId){
+        service.addUserToGroup(groupId, userId);
+    }
 }
