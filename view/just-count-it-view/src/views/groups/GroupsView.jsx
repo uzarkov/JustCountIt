@@ -9,7 +9,6 @@ import { GroupItem } from "./group-item/GroupItem";
 import { CreateGroupModal } from "./create-group-modal/CreateGroupModal";
 import { doGet } from "../../utils/fetchUtils";
 
-
 export const GroupsView = ({ user, logout }) => {
     const [chosenGroup, setChosenGroup] = useState(undefined)
     const [createGroupModalOpened, isCreateGroupModalOpened] = useState(false);

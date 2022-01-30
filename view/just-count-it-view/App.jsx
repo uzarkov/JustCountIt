@@ -4,6 +4,8 @@ import { storeData } from './src/utils/asyncStorage';
 import { doPost } from './src/utils/fetchUtils';
 import { GroupsView } from './src/views/groups/GroupsView';
 import { SignInView } from './src/views/sign-in/SignInView';
+import Toast from 'react-native-toast-message';
+import {toastsConfig} from "./src/utils/toasts";
 
 export default function App() {
   const [user, setUser] = useState({ signedIn: false })
@@ -49,6 +51,7 @@ export default function App() {
         :
         <SignInView signIn={(email, password) => signIn(email, password)} />
       }
+      <Toast config={toastsConfig}/>
     </>
   );
 }
