@@ -7,6 +7,7 @@ import { MemberItem } from "./MemberItem"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { RemoveGroupModal } from "./remove-group-modal/RemoveGroupModal";
 import {doDelete, doGet} from "../../../utils/fetchUtils"
+import {showErrorToast, showSuccessToast} from "../../../utils/toasts";
 
 export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit, removeGroup }) => {
     const [openGroupInfo, setOpenGroupInfo] = useState(false)
@@ -35,7 +36,10 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit
     const deleteGroup = () => {
         doDelete(`/api/groups/${groupMetadata.id}`)
             .then(response => {
-                console.log(`Group ${groupMetadata.name} została pomyślnie usunięta`)
+                if(response.ok)
+                    showSuccessToast(`Grupa ${groupMetadata.name} została pomyślnie usunięta`)
+                else
+                    showErrorToast("Nie udało się usunąć grupy")
             })
             .catch(err => console.log(err.message))
         removeGroup(groupMetadata.id)
