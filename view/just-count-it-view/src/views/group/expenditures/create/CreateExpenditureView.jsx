@@ -6,6 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { GroupMemberCheckboxItem } from "./GroupMemberCheckboxItem";
 import { AcceptModal } from "../../../../components/common/AcceptModal";
 import { doPost } from "../../../../utils/fetchUtils";
+import { showErrorToast, showSuccessToast } from "../../../../utils/toasts";
 
 export const CreateExpenditureView = ({ user, groupMetadata, onCancel, onAdd }) => {
     const [selectedMembers, setSelectedMembers] = useState([])
@@ -19,19 +20,25 @@ export const CreateExpenditureView = ({ user, groupMetadata, onCancel, onAdd }) 
         const price = parseFloat(priceRef.current.value())
         const debtors = [...selectedMembers]
 
+        titleRef.current.clear()
+        priceRef.current.clear()
+        setSelectedMembers([])
+
         doPost(`/api/expenditures/${groupMetadata.id}`, {
             title: title,
             price: price,
             debtorsIds: debtors
         })
             .then(response => response.json())
-            .then(json => onAdd(json))
-            .catch(err => console.log(err.message))
-
-        titleRef.current.clear()
-        priceRef.current.clear()
-        setSelectedMembers([])
-        onCancel()
+            .then(json => {
+                showSuccessToast("Wydatek dodany pomyślnie")
+                onAdd(json)
+                onCancel()
+            })
+            .catch(err => {
+                setShowAcceptModal(false)
+                showErrorToast(err.message)
+            })
     }
 
     return (
@@ -41,7 +48,6 @@ export const CreateExpenditureView = ({ user, groupMetadata, onCancel, onAdd }) 
                 isVisible={showAcceptModal}
                 onCancel={() => setShowAcceptModal(false)}
                 onAccept={() => {
-                    setShowAcceptModal(false)
                     createExpenditure()
                 }}
                 acceptText={"Dodaj"}
