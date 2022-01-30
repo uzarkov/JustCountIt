@@ -1,10 +1,22 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import * as Progress from 'react-native-progress';
 import { styles } from "./BalanceChartStyles";
+import { doGet } from "../../../utils/fetchUtils"
 
 export const BalanceChart = ({ user, groupMetadata }) => {
-    const [groupBalanceMetadata, setGroupBalanceMetadata] = useState(sampleGroupBalanceMetadata)
+    const [groupBalanceMetadata, setGroupBalanceMetadata] = useState([])
+    const fetchGroupBalance = () => {
+        doGet(`/api/balance/${groupMetadata.id}`)
+            .then(response => response.json())
+            .then(json => setGroupBalanceMetadata(json))
+            .catch(err => console.log(err.message))
+    }
+
+    useEffect(() => {
+        fetchGroupBalance()
+    }, [])
+
 
     const balances = Object.values(groupBalanceMetadata).map(m => m.balance)
     const maxBalance = Math.max(...balances) || 1
@@ -70,47 +82,47 @@ export const BalanceChart = ({ user, groupMetadata }) => {
     )
 }
 
-const sampleGroupBalanceMetadata = {
-    1: {
-        userId: 1,
-        name: "Andrzej",
-        balance: 132,
-    },
-    102: {
-        userId: 102,
-        name: "Julia",
-        balance: 32.46,
-    },
-    103: {
-        userId: 103,
-        name: "Robert",
-        balance: -23.55,
-    },
-    104: {
-        userId: 104,
-        name: "Jan",
-        balance: -1.55,
-    },
-    105: {
-        userId: 105,
-        name: "Tomasz",
-        balance: 28.55,
-    },
-    106: {
-        userId: 106,
-        name: "Ania",
-        balance: 0,
-    },
-    107: {
-        userId: 107,
-        name: "Michał",
-        balance: 123.55,
-    },
-    108: {
-        userId: 108,
-        name: "Kuba",
-        balance: -43.55,
-    },
+// const sampleGroupBalanceMetadata = {
+//     1: {
+//         userId: 1,
+//         name: "Andrzej",
+//         balance: 132,
+//     },
+//     2: {
+//         userId: 2,
+//         name: "Julia",
+//         balance: 32.46,
+//     },
+//     3: {
+//         userId: 3,
+//         name: "Robert",
+//         balance: -23.55,
+//     },
+//     4: {
+//         userId: 104,
+//         name: "Krzysztof",
+//         balance: -1.55,
+//     },
+    // 105: {
+    //     userId: 105,
+    //     name: "Tomasz",
+    //     balance: 28.55,
+    // },
+    // 106: {
+    //     userId: 106,
+    //     name: "Ania",
+    //     balance: 0,
+    // },
+    // 107: {
+    //     userId: 107,
+    //     name: "Michał",
+    //     balance: 123.55,
+    // },
+    // 108: {
+    //     userId: 108,
+    //     name: "Kuba",
+    //     balance: -43.55,
+    // },
     // 109: {
     //     userId: 109,
     //     name: "Kuba",
@@ -161,4 +173,4 @@ const sampleGroupBalanceMetadata = {
     //     name: "Kuba",
     //     balance: -43.55,
     // },
-}
+//}

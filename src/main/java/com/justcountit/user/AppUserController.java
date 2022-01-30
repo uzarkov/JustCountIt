@@ -52,13 +52,16 @@ public class AppUserController {
         Set<FinancialRequest> financialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
         List<ForDebtorsMetadata> forDebtors = new ArrayList<>();
         List<ForMeMetadata> forMe = new ArrayList<>();
+        int counter =1;
         for (var finReq : financialRequests) {
             if (finReq.getDebtee().getAppUser().getId() == user.getId()) {
-                forDebtors.add(new ForDebtorsMetadata(finReq.getDebtor().getId(), finReq.getPrice()));
+                forDebtors.add(new ForDebtorsMetadata(counter,finReq.getDebtor().getId(), finReq.getPrice()));
             } else if (finReq.getDebtor().getId() == user.getId()) {
-                forMe.add(new ForMeMetadata(finReq.getDebtee().getAppUser().getId(), finReq.getPrice()));
+                forMe.add(new ForMeMetadata(counter, finReq.getDebtee().getAppUser().getId(), finReq.getPrice()));
             }
+            counter++;
         }
+
     return new UserRequestMetadata(forDebtors,forMe);
     }
 }
