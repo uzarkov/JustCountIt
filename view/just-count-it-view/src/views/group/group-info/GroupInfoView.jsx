@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { View, Text, Pressable, ScrollView } from "react-native"
 import { AcceptModal } from "../../../components/common/AcceptModal"
 import { Accordion } from "../../../components/common/Accordion"
@@ -6,14 +6,15 @@ import { styles } from "./GroupInfoViewStyles"
 import { MemberItem } from "./MemberItem"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { RemoveGroupModal } from "./remove-group-modal/RemoveGroupModal";
-import { doDelete } from "../../../utils/fetchUtils"
+import {doDelete, doGet} from "../../../utils/fetchUtils"
 
-export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata }) => {
+export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit, removeGroup }) => {
     const [openGroupInfo, setOpenGroupInfo] = useState(false)
     const [openGroupMembers, setOpenGroupMembers] = useState(false)
     const [openDeleteYourselfModal, setOpenDeleteYourselfModal] = useState(false)
     const [openedUserDeletionModal, setOpenedUserDeletionModal] = useState(undefined)
     const [removeGroupModalOpened, setRemoveGroupModalOpened] = useState(false)
+    const [balance, setBalance] = useState([])
 
     const organizer = getOrganizer(groupMetadata)
     const removingEnabled = user.id === organizer.userId
@@ -31,14 +32,26 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata }) => {
             .catch(err => console.log(err.message))
     }
 
-    const removeGroup = () => {
+    const deleteGroup = () => {
         doDelete(`/api/groups/${groupMetadata.id}`)
             .then(response => {
-                updateGroupMetadata(undefined)
+                console.log(`Group ${groupMetadata.name} została pomyślnie usunięta`)
             })
             .catch(err => console.log(err.message))
-        setRemoveGroupModalOpened(false)
+        removeGroup(groupMetadata.id)
+        onExit()
     }
+
+    const fetchGroupBalance = () => {
+        doGet(`/api/balance/${groupMetadata.id}`)
+            .then(response => response.json())
+            .then(json => setBalance(json))
+            .catch(err => console.log(err.message))
+    }
+
+    useEffect(() => {
+        fetchGroupBalance()
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -111,9 +124,8 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata }) => {
             <RemoveGroupModal
                 isVisible={removeGroupModalOpened}
                 onCancel={() => setRemoveGroupModalOpened(false)}
-                onAccept={() => removeGroup()}
-                //TODO: true = some financial requests are not solved, use api
-                withWarning={true}
+                onAccept={() => deleteGroup()}
+                withWarning={balance.filter(user => user.balance !== 0).length !== 0}
             />
             <View style={{ flex: 0.15, flexDirection: 'row', alignItems: 'flex-end' }}>
                 <Pressable style={styles.bottomButton} onPress={() => setOpenDeleteYourselfModal(true)}>

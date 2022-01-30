@@ -56,7 +56,7 @@ public class GroupController {
     public ResponseEntity<Void> removeGroup(@PathVariable Long groupId, Principal principal) {
         var callerName = principal.getName();
         service.removeGroup(groupId, callerName);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{groupId}/user/{userId}")
