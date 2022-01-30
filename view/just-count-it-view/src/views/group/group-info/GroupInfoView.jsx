@@ -32,7 +32,11 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata }) => {
     }
 
     const removeGroup = () => {
-        console.log(`Group ${groupMetadata.name} została pomyślnie usunięta`)
+        doDelete(`/api/groups/${groupMetadata.id}`)
+            .then(response => {
+                updateGroupMetadata(undefined)
+            })
+            .catch(err => console.log(err.message))
         setRemoveGroupModalOpened(false)
     }
 

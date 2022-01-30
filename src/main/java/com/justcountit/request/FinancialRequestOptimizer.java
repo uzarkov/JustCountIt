@@ -3,6 +3,8 @@ package com.justcountit.request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class FinancialRequestOptimizer {
         var oldFinancialRequests = financialRequestService.getAllActiveFinancialRequestsIn(groupId);
         Map<Long, Double> netCashFlow = calculateNetCashFlowIn(oldFinancialRequests);
         financialRequestRepository.deleteAll(oldFinancialRequests);
-        optimizeNetCashFlow(netCashFlow, groupId);
+        optimizeNetCashFlow(convertPricesToBigDecimal(netCashFlow), groupId);
     }
 
     public Map<Long, Double> calculateNetCashFlowIn(Set<FinancialRequest> financialRequests) {
@@ -35,28 +37,37 @@ public class FinancialRequestOptimizer {
         return result;
     }
 
-    private void optimizeNetCashFlow(Map<Long, Double> netCashFlow, Long groupId) {
-        while (!netCashFlow.isEmpty()) {
+    private Map<Long, BigDecimal> convertPricesToBigDecimal(Map<Long, Double> netCashFlow) {
+        Map<Long, BigDecimal> result = new HashMap<>();
+        for (var entry : netCashFlow.entrySet()) {
+            var price = BigDecimal.valueOf(entry.getValue()).setScale(2, RoundingMode.CEILING);
+            result.put(entry.getKey(), price);
+        }
+        return result;
+    }
+
+    private void optimizeNetCashFlow(Map<Long, BigDecimal> netCashFlow, Long groupId) {
+        while (netCashFlow.size() > 1) {
             var maxReceiver = getMaxReceiverFrom(netCashFlow);
             var maxGiver = getMaxGiverFrom(netCashFlow);
 
             var maxReceiverCashFlow = maxReceiver.getValue();
-            assert maxReceiverCashFlow > 0;
+            assert maxReceiverCashFlow.compareTo(BigDecimal.ZERO) > 0;
 
             var maxGiverCashFlow = maxGiver.getValue();
-            assert maxGiverCashFlow < 0;
+            assert maxGiverCashFlow.compareTo(BigDecimal.ZERO) < 0;
 
             var debteeId = maxReceiver.getKey();
             var debtorId = maxGiver.getKey();
-            var cashFlowDifference = maxReceiverCashFlow + maxGiverCashFlow;
-            var nextRequestPrice = Math.abs(maxGiverCashFlow);
+            var cashFlowDifference = maxReceiverCashFlow.add(maxGiverCashFlow);
+            var nextRequestPrice = maxGiverCashFlow.abs();
 
-            if (cashFlowDifference > 0) {
-                var newCashFlow = maxReceiverCashFlow + maxGiverCashFlow;
+            if (cashFlowDifference.compareTo(BigDecimal.ZERO) > 0) {
+                var newCashFlow = maxReceiverCashFlow.add(maxGiverCashFlow);
                 netCashFlow.remove(debtorId);
                 netCashFlow.put(debteeId, newCashFlow);
-            } else if (cashFlowDifference < 0) {
-                var newCashFlow = maxGiverCashFlow + maxReceiverCashFlow;
+            } else if (cashFlowDifference.compareTo(BigDecimal.ZERO) < 0) {
+                var newCashFlow = maxGiverCashFlow.add(maxReceiverCashFlow);
                 netCashFlow.remove(debteeId);
                 netCashFlow.put(debtorId, newCashFlow);
                 nextRequestPrice = maxReceiverCashFlow;
@@ -65,21 +76,21 @@ public class FinancialRequestOptimizer {
                 netCashFlow.remove(debteeId);
             }
 
-            financialRequestService.addFinancialRequest(debteeId, debtorId, nextRequestPrice, groupId);
+            financialRequestService.addFinancialRequest(debteeId, debtorId, nextRequestPrice.doubleValue(), groupId);
         }
     }
 
-    private Map.Entry<Long, Double> getMaxReceiverFrom(Map<Long, Double> netCashFlow) {
+    private Map.Entry<Long, BigDecimal> getMaxReceiverFrom(Map<Long, BigDecimal> netCashFlow) {
         return netCashFlow.entrySet().stream().max(comparingByNetCashFlow())
                 .orElseThrow();
     }
 
-    private Map.Entry<Long, Double> getMaxGiverFrom(Map<Long, Double> netCashFlow) {
+    private Map.Entry<Long, BigDecimal> getMaxGiverFrom(Map<Long, BigDecimal> netCashFlow) {
         return netCashFlow.entrySet().stream().min(comparingByNetCashFlow())
                 .orElseThrow();
     }
 
-    private Comparator<Map.Entry<Long, Double>> comparingByNetCashFlow() {
-        return Comparator.comparingDouble(Map.Entry::getValue);
+    private Comparator<Map.Entry<Long, BigDecimal>> comparingByNetCashFlow() {
+        return Map.Entry.comparingByValue();
     }
 }
