@@ -5,9 +5,9 @@ import { styles } from "./CreateExpenditureViewStyles"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { GroupMemberCheckboxItem } from "./GroupMemberCheckboxItem";
 import { AcceptModal } from "../../../../components/common/AcceptModal";
+import { doPost } from "../../../../utils/fetchUtils";
 
-export const CreateExpenditureView = ({ user, groupMetadata, onCancel }) => {
-    const [groupMembers, setGroupMembers] = useState(sampleGroupMembers)
+export const CreateExpenditureView = ({ user, groupMetadata, onCancel, onAdd }) => {
     const [selectedMembers, setSelectedMembers] = useState([])
     const [showAcceptModal, setShowAcceptModal] = useState(false)
 
@@ -16,10 +16,17 @@ export const CreateExpenditureView = ({ user, groupMetadata, onCancel }) => {
 
     const createExpenditure = () => {
         const title = titleRef.current.value()
-        const price = priceRef.current.value()
+        const price = parseFloat(priceRef.current.value())
         const debtors = [...selectedMembers]
 
-        // TODO: Post expenditure creation request
+        doPost(`/api/expenditures/${groupMetadata.id}`, {
+            title: title,
+            price: price,
+            debtorsIds: debtors
+        })
+            .then(response => response.json())
+            .then(json => onAdd(json))
+            .catch(err => console.log(err.message))
 
         titleRef.current.clear()
         priceRef.current.clear()
@@ -70,15 +77,15 @@ export const CreateExpenditureView = ({ user, groupMetadata, onCancel }) => {
             <Text style={styles.headerText}>Kto jest należny?</Text>
             <View style={{ flex: 0.85 }}>
                 <ScrollView>
-                    {groupMembers.map(member => (
+                    {Object.values(groupMetadata.members).filter(m => m.userId !== user.id).map(member => (
                         <GroupMemberCheckboxItem
                             key={member.userId}
-                            name={member.username}
+                            name={member.name}
                             onValueChange={(isChecked) => {
                                 if (isChecked) {
-                                    setSelectedMembers([...selectedMembers, member])
+                                    setSelectedMembers([...selectedMembers, member.userId])
                                 } else {
-                                    setSelectedMembers(selectedMembers.filter(m => m.userId !== member.userId))
+                                    setSelectedMembers(selectedMembers.filter(userId => userId !== member.userId))
                                 }
                             }}
                         />
@@ -111,18 +118,3 @@ const NavButton = ({ text, isActive, onClick = () => { } }) => {
         </Pressable>
     )
 }
-
-const sampleGroupMembers = [
-    {
-        userId: 101,
-        username: 'Andrzej'
-    },
-    {
-        userId: 102,
-        username: 'Julia'
-    },
-    {
-        userId: 103,
-        username: 'Robert'
-    },
-]

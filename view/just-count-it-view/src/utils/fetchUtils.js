@@ -1,21 +1,33 @@
 import { APP_URL } from "../config/constants"
 import { readData } from "./asyncStorage"
 
-export const doGet = async (endpoint, body = {}) => {
+const checkForError = async (response) => {
+    if (!response.ok) {
+        if (response.headers.get('content-type') === 'application/json') {
+            const json = await response.json()
+            throw new Error(json.message)
+        }
+        throw new Error("Something went wrong")
+    }
+    return response
+}
+
+export const doGet = async (endpoint) => {
     const headers = await addAuthorizationHeader({
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
     })
 
     return fetch(APP_URL + endpoint, {
         method: 'GET',
         headers: headers,
-        body: body
     })
+        .then(response => checkForError(response))
 }
 
 export const doPost = async (endpoint, body = {}, authorize = true) => {
     let headers = {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
     }
 
     if (authorize) {
@@ -25,8 +37,9 @@ export const doPost = async (endpoint, body = {}, authorize = true) => {
     return fetch(APP_URL + endpoint, {
         method: 'POST',
         headers: headers,
-        body: body
+        body: JSON.stringify(body)
     })
+        .then(response => checkForError(response))
 }
 
 const addAuthorizationHeader = async (headers) => {

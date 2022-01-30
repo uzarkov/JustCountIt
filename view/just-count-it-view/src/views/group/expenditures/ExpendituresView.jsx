@@ -1,16 +1,28 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Text, ScrollView } from "react-native"
 import { ExpenditureItem } from "./ExpenditureItem"
 import { styles } from "./ExpendituresViewStyles"
 import ActionButton from "react-native-action-button"
 import { CreateExpenditureView } from "./create/CreateExpenditureView"
+import { doGet } from "../../../utils/fetchUtils"
 
 export const ExpendituresView = ({ user, groupMetadata, setShowNavigation }) => {
     const [inCreation, setInCreation] = useState(false)
-    const [expenditures, setExpenditures] = useState(sampleExpenditures)
+    const [expenditures, setExpenditures] = useState([])
 
     const totalCost = sumOfExpendituresPrices(expenditures)
     const myTotalCost = sumOfExpendituresPrices(expenditures.filter(e => e.userId === user.id))
+
+    const fetchExpenditures = () => {
+        doGet(`/api/expenditures/${groupMetadata.id}`)
+            .then(response => response.json())
+            .then(json => setExpenditures(json))
+            .catch(err => console.log(err.message))
+    }
+
+    useEffect(() => {
+        fetchExpenditures()
+    }, [])
 
     if (inCreation) {
         return <CreateExpenditureView
@@ -20,6 +32,7 @@ export const ExpendituresView = ({ user, groupMetadata, setShowNavigation }) => 
                 setShowNavigation(true)
                 setInCreation(false)
             }}
+            onAdd={newExpenditure => setExpenditures([...expenditures, newExpenditure])}
         />
     }
 
@@ -27,7 +40,7 @@ export const ExpendituresView = ({ user, groupMetadata, setShowNavigation }) => 
         <View style={styles.container}>
             <View style={{ flex: 0.73 }}>
                 <ScrollView>
-                    {expenditures.map(e => (
+                    {sorted(expenditures).map(e => (
                         <ExpenditureItem
                             key={e.id}
                             title={e.title}
@@ -72,29 +85,8 @@ const sumOfExpendituresPrices = (expenditures) => {
     }, { price: 0 }).price
 }
 
-const sampleExpenditures = [
-    {
-        id: 1,
-        price: 160.23,
-        title: "Paliwo",
-        date: "2022-01-23",
-        username: "Andrzej",
-        userId: 101,
-    },
-    {
-        id: 2,
-        price: 300,
-        title: "Hotel",
-        date: "2022-01-22",
-        username: "Julia",
-        userId: 102,
-    },
-    {
-        id: 3,
-        price: 46,
-        title: "Kino",
-        date: "2022-01-21",
-        username: "Robert",
-        userId: 103,
-    },
-]
+const sorted = (expenditures) => {
+    const result = [...expenditures]
+    result.sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0))
+    return result
+}
