@@ -1,12 +1,23 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Text, StyleSheet, Pressable } from "react-native"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { styles } from "./RequestsListStyles";
 import { AcceptModal } from "../../../components/common/AcceptModal";
+import { doGet } from "../../../utils/fetchUtils"
 
 export const RequestsList = ({ user, groupMetadata }) => {
-    const [financialRequests, setFinancialRequests] = useState(sampleFinancialRequests)
+    const [financialRequests, setFinancialRequests] = useState({forDebtors:[], forMe:[]})
+    const fetchRequestList = () => {
+        doGet(`/api/balance/${groupMetadata.id}/currentUser`)
+            .then(response => response.json())
+            .then(json => setFinancialRequests(json))
+            .catch(err => console.log(err.message))
+    }
+
+    useEffect(() => {
+        fetchRequestList()
+    }, [])
     const [openedAcceptModal, setOpenedAcceptModal] = useState(undefined)
 
     const acceptRequest = (requestId) => {
@@ -15,6 +26,7 @@ export const RequestsList = ({ user, groupMetadata }) => {
 
     return (
         <View>
+
             {financialRequests.forMe.map(request => (
                 <FinancialRequestForMe
                     key={request.id}
@@ -109,24 +121,24 @@ const sampleFinancialRequests = {
     forDebtors: [
         {
             id: 1,
-            debtor: 104,
+            debtor: 4,
             price: 4.00,
         },
         {
             id: 2,
-            debtor: 102,
+            debtor: 2,
             price: 26.50,
         }
     ],
     forMe: [
         {
             id: 3,
-            from: 103,
+            from: 3,
             price: 15.00,
         },
         {
             id: 4,
-            from: 105,
+            from: 2,
             price: 56.21,
         },
     ]
