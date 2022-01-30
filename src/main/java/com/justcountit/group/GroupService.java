@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,17 +44,20 @@ public class GroupService {
     }
 
 
-    public void deleteUserFromGroup(Long userId, Long groupId)  {
-        if (!financialRequestService.hasFinancialRequests(userId, groupId))
-        {
-            groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
-        }
-        else {
-            throw DeletingUserFromGroupException.pendingTransaction();
-        }
+    public String deleteUserFromGroup(Long userId, Long groupId)  {
+            hasFinancialRequest(userId,groupId);
+            return groupMembershipService.deleteUserFromGroupMembership(userId, groupId);
 
 
     }
+
+    private void hasFinancialRequest(Long userId, Long groupId){
+        if (financialRequestService.hasFinancialRequests(userId,groupId)){
+            throw DeletingUserFromGroupException.pendingTransaction();
+        }
+
+    }
+
 
     public List<GroupBaseData> getAllGroups(String userEmail) {
         var user = appUserService.getUserByEmail(userEmail);
@@ -89,4 +93,10 @@ public class GroupService {
     }
 
 
+    public void checkIfOrganizer(Long callerId, Long groupId, Long userId) {
+        var isOrganizer = groupMembershipService.isOrganizer(callerId, groupId);
+        if (!isOrganizer || Objects.equals(callerId, userId)){
+            throw DeletingUserFromGroupException.notAuthorized();
+        }
+    }
 }

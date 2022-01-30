@@ -40,8 +40,9 @@ public class GroupMembershipService {
 
     }
 
-    public void deleteUserFromGroupMembership(Long userId, Long groupId){
+    public String deleteUserFromGroupMembership(Long userId, Long groupId){
         groupMembershipRepository.deleteById(GroupMembershipKey.from(userId,groupId));
+        return "Deleted successfully";
     }
 
     public GroupMembership addUserToGroup(Long userId, Long groupId){
