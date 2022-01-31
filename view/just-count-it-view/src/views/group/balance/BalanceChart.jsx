@@ -13,7 +13,7 @@ export const BalanceChart = ({ user, groupMetadata, groupBalanceMetadata }) => {
                 if (balanceMeta.balance < 0) {
                     const progress = balanceMeta.balance / minBalance
                     return (
-                        <>
+                        <View key={balanceMeta.userId}>
                             <View style={styles.rowContainer}>
                                 <Progress.Bar
                                     animated={false}
@@ -33,13 +33,12 @@ export const BalanceChart = ({ user, groupMetadata, groupBalanceMetadata }) => {
                                 </Text>
                             </View>
                             <View style={styles.stripe}></View>
-                        </>
-
+                        </View>
                     )
                 } else {
                     const progress = balanceMeta.balance / maxBalance
                     return (
-                        <>
+                        <View key={balanceMeta.userId}>
                             <View style={styles.rowContainer}>
                                 <Text style={[styles.text, { textAlign: 'right' }]}>
                                     {`${balanceMeta.name} ${balanceMeta.userId === user.id ? '(Ja)' : ''}`}
@@ -59,7 +58,7 @@ export const BalanceChart = ({ user, groupMetadata, groupBalanceMetadata }) => {
                                 </Progress.Bar>
                             </View>
                             <View style={styles.stripe}></View>
-                        </>
+                        </View>
                     )
                 }
             })}

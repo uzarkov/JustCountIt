@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import { View, Text, Pressable, ScrollView } from "react-native"
 import { AcceptModal } from "../../../components/common/AcceptModal"
 import { Accordion } from "../../../components/common/Accordion"
@@ -6,8 +6,8 @@ import { styles } from "./GroupInfoViewStyles"
 import { MemberItem } from "./MemberItem"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { RemoveGroupModal } from "./remove-group-modal/RemoveGroupModal";
-import {doDelete, doGet} from "../../../utils/fetchUtils"
-import {showErrorToast, showSuccessToast} from "../../../utils/toasts";
+import { doDelete, doGet } from "../../../utils/fetchUtils"
+import { showErrorToast, showSuccessToast } from "../../../utils/toasts";
 
 export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit, removeGroup }) => {
     const [openGroupInfo, setOpenGroupInfo] = useState(false)
@@ -47,7 +47,7 @@ export const GroupInfoView = ({ user, groupMetadata, updateGroupMetadata, onExit
     const deleteGroup = () => {
         doDelete(`/api/groups/${groupMetadata.id}`)
             .then(response => {
-                if(response.ok)
+                if (response.ok)
                     showSuccessToast(`Grupa ${groupMetadata.name} została pomyślnie usunięta`)
                 else
                     showErrorToast("Nie udało się usunąć grupy")
