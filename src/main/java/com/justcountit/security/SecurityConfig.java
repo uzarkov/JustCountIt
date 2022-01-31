@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .frameOptions().disable()
             .and()
             .authorizeRequests()
-            .antMatchers("/h2-console/**").permitAll();
+            .antMatchers("/h2-console/**").permitAll()
+            .antMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll();
     }
 
     @Override
