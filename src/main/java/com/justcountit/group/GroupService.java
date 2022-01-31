@@ -91,9 +91,13 @@ public class GroupService {
     }
 
     private void validateGroupData(Group group) {
-        if (group.getName().length() < 1 || group.getCurrency() == null) {
+        if (!isNameCorrect(group) || group.getCurrency() == null) {
             throw WrongGroupDataException.wrongData();
         }
+    }
+
+    private boolean isNameCorrect(Group group) {
+        return group.getName().length() >= 1 && group.getName().length() <= 60;
     }
 
     public void addUserToGroup(Long groupId, Long userId){

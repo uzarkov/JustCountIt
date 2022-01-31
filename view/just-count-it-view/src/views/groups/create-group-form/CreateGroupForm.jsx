@@ -31,6 +31,9 @@ export const CreateGroupForm = ({showModal, addGroup}) => {
         if (groupName.length < 1) {
             showErrorToast("Niepoprawna nazwa grupy.\nMinimalna długość to 1 znak.")
         }
+        if (groupName.length > 60) {
+            showErrorToast("Niepoprawna nazwa grupy.\nMaksymalna długość to 60 znaków.")
+        }
     }
 
     const onCreate = () => {
