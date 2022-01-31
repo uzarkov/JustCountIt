@@ -4,9 +4,7 @@ import com.justcountit.request.FinancialRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +36,19 @@ public class AppUserService {
             }
         }
         return new UserRequestMetadata(forDebtors,forMe);
+    }
+
+    public List<UserBalanceMetadata> processData(Set<AppUserWithRole> appUserWithRoles, Map<Long, Double> balanceMap) {
+        List<UserBalanceMetadata> userBalanceMetadata = new ArrayList<>();
+        for (var user : appUserWithRoles) {
+            balanceMap.putIfAbsent(user.getAppUser().getId(), 0d);
+        }
+
+        for (Map.Entry<Long, Double> entry : balanceMap.entrySet()) {
+            AppUser currUser = appUserWithRoles.stream().map(AppUserWithRole::getAppUser).filter
+                    (a -> Objects.equals(a.getId(), entry.getKey())).findFirst().orElseThrow();
+            userBalanceMetadata.add(new UserBalanceMetadata(entry.getKey(), currUser.getName(), entry.getValue()));
+        }
+        return userBalanceMetadata;
     }
 }
